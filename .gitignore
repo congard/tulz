@@ -1,0 +1,6 @@
+# CLion folders
+.idea
+cmake-build-*
+
+# some tests for debugging
+test
