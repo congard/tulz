@@ -20,9 +20,6 @@ void Path::setPath(const std::string &_path) {
     StringUtils::replaceAll(path, "\\", "/");
     if (path.back() == Separator)
         path.erase(path.length() - 1, 1);
-
-    if (!exists())
-        throw Exception(path + " not found", NotFound);
 }
 
 bool Path::exists() {
@@ -51,7 +48,13 @@ bool Path::isAbsolute() {
 #endif
 }
 
+#define _checkExists \
+if (!exists()) \
+    throw Exception(path + " not found", NotFound);
+
 size_t Path::size() {
+    _checkExists
+
     if (isFile()) {
         FILE *file = fopen(path.c_str(), "rb");
         fseek(file, 0, SEEK_END);
@@ -88,8 +91,9 @@ std::string Path::getPathName() {
 }
 
 std::vector<std::string> Path::listChilds() {
-    std::vector<std::string> result;
+    _checkExists
 
+    std::vector<std::string> result;
     DIR *dir = opendir(path.c_str());
 
     if (!dir)
