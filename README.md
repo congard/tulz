@@ -2,7 +2,9 @@
 Tulz is cross-platform tools library for C++ development
 
 # Installing
-Just add tulz to your project using `add_subdirectory`
+1. Put sources in your libs folder
+2. Add tulz to your project `add_subdirectory(your_libs_folder/tulz)`
+3. After `add_executable(your_project ...)` add `target_link_libraries(your_project tulz)`
 
 # Usage
 ```
