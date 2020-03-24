@@ -65,7 +65,7 @@ std::vector<Matches> findRegex(const std::string &src, const std::string &_regex
     for (auto i = std::sregex_iterator(src.begin(), src.end(), regex); i != std::sregex_iterator(); ++i) {
         std::vector<std::string> strings;
         for (size_t j = 0; j < i->size(); j++) {
-            if (!ignoreEmptyMatches && i->operator[](j).str().empty())
+            if (ignoreEmptyMatches && i->operator[](j).str().empty())
                 continue; // ignore empty matches
             strings.emplace_back(i->operator[](j).str());
         }
