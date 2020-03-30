@@ -19,4 +19,7 @@
 #define switch_t_end \
 }
 
+#define namespace_t(_name) namespace _name {
+#define namespace_t_end }
+
 #endif //TULZ_MACROS_H
