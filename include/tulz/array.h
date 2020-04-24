@@ -2,6 +2,7 @@
 #define TULZ_ARRAY_H
 
 #include <cstddef>
+#include <algorithm>
 
 namespace tulz {
 
