@@ -2,7 +2,7 @@
 #define TULZ_PATH_H
 
 #include <string>
-#include <tulz/array.h>
+#include <tulz/Array.h>
 #include <vector>
 
 namespace tulz {

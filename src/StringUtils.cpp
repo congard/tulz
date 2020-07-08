@@ -1,4 +1,4 @@
-#include <tulz/string_utils.h>
+#include <tulz/StringUtils.h>
 #include <regex>
 
 namespace tulz {

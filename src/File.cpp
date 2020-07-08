@@ -1,7 +1,7 @@
-#include "tulz/file.h"
+#include "tulz/File.h"
 
 #include <iostream>
-#include <tulz/Exception>
+#include <tulz/Exception.h>
 
 namespace tulz {
 

@@ -1,7 +1,7 @@
 #ifndef TULZ_FILE_H
 #define TULZ_FILE_H
 
-#include <tulz/Path>
+#include <tulz/Path.h>
 
 namespace tulz {
 

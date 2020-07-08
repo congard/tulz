@@ -7,12 +7,12 @@ Tulz is cross-platform tools library for C++ development
 3. After `add_executable(your_project ...)` add `target_link_libraries(your_project tulz)`
 
 # Usage
-```
+```cpp
 #include <iostream>
-#include <tulz/File>
-#include <tulz/Path>
-#include <tulz/Exception>
-#include <tulz/StringUtils>
+#include <tulz/File.h>
+#include <tulz/Path.h>
+#include <tulz/Exception.h>
+#include <tulz/StringUtils.h>
 
 using namespace tulz;
 

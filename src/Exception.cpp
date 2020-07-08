@@ -1,4 +1,4 @@
-#include "tulz/exception.h"
+#include "tulz/Exception.h"
 
 namespace tulz {
 Exception::Exception(const std::string &message, const int type) {
@@ -6,7 +6,7 @@ Exception::Exception(const std::string &message, const int type) {
     this->type = type;
 }
 
-const char* Exception::what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW {
+const char* Exception::what() const noexcept {
     return message.c_str();
 }
 }

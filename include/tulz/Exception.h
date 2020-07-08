@@ -1,4 +1,4 @@
-#ifndef TULZ_EXCEPTION_
+#ifndef TULZ_EXCEPTION_H
 #define TULZ_EXCEPTION_H
 
 #include <exception>
@@ -12,8 +12,8 @@ public:
 
     explicit Exception(const std::string &message, int type = -1);
 
-    const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override;
+    const char* what() const noexcept override;
 };
 }
 
-#endif //TULZ_EXCEPTION_
+#endif //TULZ_EXCEPTION_H

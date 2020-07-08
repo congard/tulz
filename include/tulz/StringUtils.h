@@ -1,5 +1,5 @@
-#ifndef TULZ_STRING_UTILS_H
-#define TULZ_STRING_UTILS_H
+#ifndef TULZ_STRINGUTILS_H
+#define TULZ_STRINGUTILS_H
 
 #include <string>
 #include <vector>
@@ -59,4 +59,4 @@ std::vector<Matches> findRegex(const std::string &src, const std::string &regex,
 }
 
 
-#endif //TULZ_STRING_UTILS_H
+#endif //TULZ_STRINGUTILS_H

@@ -1,6 +1,6 @@
-#include <tulz/path.h>
-#include <tulz/StringUtils>
-#include <tulz/Exception>
+#include <tulz/Path.h>
+#include <tulz/StringUtils.h>
+#include <tulz/Exception.h>
 #include <dirent.h>
 #include <unistd.h>
 
