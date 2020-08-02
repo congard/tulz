@@ -62,6 +62,10 @@ public:
         return m_array[index];
     }
 
+    const T& operator[](const size_t index) const {
+        return m_array[index];
+    }
+
     inline T* array() const {
         return m_array;
     }
