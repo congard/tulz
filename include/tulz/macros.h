@@ -22,4 +22,7 @@
 #define namespace_t(_name) namespace _name {
 #define namespace_t_end }
 
+#define enum_struct(name, ...) struct name { enum { __VA_ARGS__ }; };
+#define enum_class(name, ...) enum_struct(name, __VA_ARGS__)
+
 #endif //TULZ_MACROS_H
