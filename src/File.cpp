@@ -1,7 +1,10 @@
 #include "tulz/File.h"
 
-#include <iostream>
 #include <tulz/Exception.h>
+
+#include <iostream>
+
+using namespace std;
 
 namespace tulz {
 
@@ -14,24 +17,31 @@ def_constant(AppendText)
 def_constant(Append)
 #undef def_constant
 
-File::File(const std::string &path, const std::string &mode) {
+File::File(const string &path, const string &mode) {
     open(path, mode);
 }
 
-void File::open(const std::string &path, const std::string &mode) {
+File::File() = default;
+
+inline bool isWriteMode(const string &mode) {
+    return mode == File::WriteText || mode == File::Write || mode == File::AppendText || mode == File::Append;
+}
+
+void File::open(const string &path, const string &mode) {
     Path p(path);
-    if (!p.isFile()) {
-        if (!p.exists())
-            throw Exception("File " + path + " not found", Path::NotFound);
+
+    if (!p.exists() && !isWriteMode(mode))
+        throw Exception("File " + path + " not found", Path::NotFound);
+
+    if (p.exists() && p.isDirectory())
         throw Exception(path + " is not file, it is directory", Path::NotFile);
-    }
 
     file = fopen(p.toString().c_str(), mode.c_str());
 }
 
 void File::close() {
     if (!file)
-        std::cerr << "Can't close file: file not opened";
+        cerr << "Can't close file: file not opened";
     else {
         fclose(file);
         file = nullptr;
@@ -46,26 +56,29 @@ void File::write(const Array<byte> &data) {
     write(data.array(), data.size());
 }
 
-void File::write(const std::string &string) {
-    write(string.c_str(), string.length());
+void File::write(const string &str) {
+    write(str.c_str(), str.length());
 }
 
 Array<byte> File::read() {
     size_t fsize = size();
+
     Array<byte> result(fsize);
     fread(result.m_array, 1, fsize, file);
+
     return result;
 }
 
-std::string File::readStr() {
+string File::readStr() {
     auto data = read();
-    return std::string(reinterpret_cast<char const *>(data.array()), data.size());
+    return string(reinterpret_cast<char const *>(data.array()), data.size());
 }
 
 size_t File::size() {
     fseek(file, 0, SEEK_END);
     size_t fsize = ftell(file);
     fseek(file, 0, SEEK_SET);
+
     return fsize;
 }
 }
