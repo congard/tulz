@@ -21,6 +21,7 @@ public:
 
     File(const std::string &path, const std::string &mode);
     File();
+    ~File();
 
     void open(const std::string &path, const std::string &mode);
     void close();
@@ -32,6 +33,7 @@ public:
     Array<byte> read();
     std::string readStr();
 
+    bool isOpen();
     size_t size();
 
 protected:

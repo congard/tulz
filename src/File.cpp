@@ -23,6 +23,12 @@ File::File(const string &path, const string &mode) {
 
 File::File() = default;
 
+File::~File() {
+    if (isOpen()) {
+        close();
+    }
+}
+
 inline bool isWriteMode(const string &mode) {
     return mode == File::WriteText || mode == File::Write || mode == File::AppendText || mode == File::Append;
 }
@@ -36,11 +42,14 @@ void File::open(const string &path, const string &mode) {
     if (p.exists() && p.isDirectory())
         throw Exception(path + " is not file, it is directory", Path::NotFile);
 
+    if (isOpen())
+        close();
+
     file = fopen(p.toString().c_str(), mode.c_str());
 }
 
 void File::close() {
-    if (!file)
+    if (!isOpen())
         cerr << "Can't close file: file not opened";
     else {
         fclose(file);
@@ -72,6 +81,10 @@ Array<byte> File::read() {
 string File::readStr() {
     auto data = read();
     return string(reinterpret_cast<char const *>(data.array()), data.size());
+}
+
+bool File::isOpen() {
+    return file;
 }
 
 size_t File::size() {
