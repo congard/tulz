@@ -31,6 +31,8 @@ void DirectoryVisitor::visit() {
 }
 
 void DirectoryVisitor::restore() {
-    Path::setWorkingDirectory(m_oldDir);
+    if (!m_oldDir.empty()) {
+        Path::setWorkingDirectory(m_oldDir);
+    }
 }
 }
