@@ -1,8 +1,9 @@
 #ifndef TULZ_PATH_H
 #define TULZ_PATH_H
 
-#include <string>
 #include <tulz/Array.h>
+
+#include <string>
 #include <vector>
 
 namespace tulz {
@@ -19,13 +20,16 @@ public:
         NotFound
     };
 
+public:
     static constexpr char Separator = '/';
+
 #ifdef __linux__
     static constexpr char SystemSeparator = '/';
 #elif defined(__MINGW32__)
     static constexpr char SystemSeparator = '\\';
 #endif
 
+public:
     Path() = default;
     explicit Path(const std::string &path);
 
@@ -44,11 +48,13 @@ public:
 
     std::vector<std::string> listChilds();
 
+    static void setWorkingDirectory(const std::string &dir);
+
     static std::string getWorkingDirectory();
     static std::string join(const std::string &p1, const std::string &p2);
 
 protected:
-    std::string path;
+    std::string m_path;
 };
 }
 
