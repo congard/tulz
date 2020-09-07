@@ -11,4 +11,5 @@ add_library(tulz
         include/tulz/StringUtils.h src/StringUtils.cpp
         include/tulz/macros.h
         include/tulz/File.h src/File.cpp
-        include/tulz/Exception.h src/Exception.cpp)
+        include/tulz/Exception.h src/Exception.cpp
+        include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp)
