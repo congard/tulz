@@ -96,7 +96,8 @@ string Path::getParentDirectory() {
     size_t separatorPos = path.find_last_of("/\\");
 
     // remove last separator if exists
-    if (separatorPos == path.size() - 1) {
+    // if path.size() == 0, then path.size() - 1 == string::npos
+    if (separatorPos != string::npos && separatorPos == path.size() - 1) {
         path.erase(separatorPos, path.size());
         separatorPos = path.find_last_of("/\\");
     }
