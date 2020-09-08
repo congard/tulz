@@ -91,13 +91,21 @@ string Path::toString() {
 }
 
 string Path::getParentDirectory() {
-    size_t separatorPos = m_path.find_last_of(Separator);
+    string path = m_path;
+
+    size_t separatorPos = path.find_last_of("/\\");
+
+    // remove last separator if exists
+    if (separatorPos == path.size() - 1) {
+        path.erase(separatorPos, path.size());
+        separatorPos = path.find_last_of("/\\");
+    }
 
     // 'dir' or '/', 'D:/' etc
-    if (separatorPos == string::npos || separatorPos == m_path.find_first_of(Separator))
-        return m_path;
+    if (separatorPos == string::npos)
+        return ""; // means 'already here'
 
-    return string(m_path).erase(separatorPos, m_path.size());
+    return path.erase(separatorPos, m_path.size());
 }
 
 string Path::getPathName() {
@@ -135,13 +143,16 @@ string Path::getWorkingDirectory() {
 }
 
 string Path::join(const string &p1, const string &p2) {
+    if (p1.empty())
+        return p2;
+
     string first = p1;
     string second = p2;
 
-    if (first.back() != Separator)
-        first += Separator;
+    if (first.back() != Separator && first.back() != SystemSeparator)
+        first += SystemSeparator;
 
-    if (second.front() == Separator)
+    if (second.front() == Separator || second.front() == SystemSeparator)
         second.erase(0, 1);
 
     return first + second;
