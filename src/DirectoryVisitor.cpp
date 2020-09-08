@@ -25,9 +25,10 @@ const string& DirectoryVisitor::get() const {
 }
 
 void DirectoryVisitor::visit() {
-    m_oldDir = Path::getWorkingDirectory();
-
-    Path::setWorkingDirectory(m_dir);
+    if (!m_dir.empty()) {
+        m_oldDir = Path::getWorkingDirectory();
+        Path::setWorkingDirectory(m_dir);
+    }
 }
 
 void DirectoryVisitor::restore() {
