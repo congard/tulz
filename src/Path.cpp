@@ -5,9 +5,9 @@
 #include <unistd.h>
 
 #ifdef __linux__
-#define _getCurrentDir getcwd
+#define getCurrentDir getcwd
 #elif __MINGW32__
-#define _getCurrentDir _getcwd
+#define getCurrentDir _getcwd
 #endif
 
 using namespace std;
@@ -124,7 +124,7 @@ vector<string> Path::listChilds() {
 
     dirent *ent;
 
-    while ((ent = readdir (dir)) != nullptr)
+    while ((ent = readdir(dir)) != nullptr)
         result.emplace_back(ent->d_name);
 
     closedir(dir);
@@ -138,7 +138,7 @@ void Path::setWorkingDirectory(const string &dir) {
 
 string Path::getWorkingDirectory() {
     char buff[FILENAME_MAX];
-    _getCurrentDir(buff, FILENAME_MAX);
+    getCurrentDir(buff, FILENAME_MAX);
 
     return string(buff);
 }
@@ -147,15 +147,13 @@ string Path::join(const string &p1, const string &p2) {
     if (p1.empty())
         return p2;
 
-    string first = p1;
-    string second = p2;
+    // if p2 is absolute just return it
+    if (p2.front() == Separator)
+        return p2;
 
-    if (first.back() != Separator && first.back() != SystemSeparator)
-        first += SystemSeparator;
+    if (p1.back() != Separator && p1.back() != SystemSeparator)
+        return p1 + SystemSeparator + p2;
 
-    if (second.front() == Separator || second.front() == SystemSeparator)
-        second.erase(0, 1);
-
-    return first + second;
+    return p1 + p2;
 }
 }
