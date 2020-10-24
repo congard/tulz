@@ -53,7 +53,7 @@ bool Path::isAbsolute() {
 #ifdef __linux__
     return m_path.find(Separator) == 0; // /home/folder
 #elif defined(__MINGW32__)
-    return path.find(Separator) == 2; // C:/folder
+    return m_path.find(Separator) == 2; // C:/folder
 #endif
 }
 
