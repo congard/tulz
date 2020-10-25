@@ -10,20 +10,22 @@ namespace tulz {
  */
 class File {
 public:
-#define constant(name, data) static constexpr char name[] = data;
-    constant(ReadText, "r")
-    constant(Read, "rb")
-    constant(WriteText, "w")
-    constant(Write, "wb")
-    constant(AppendText, "a")
-    constant(Append, "ab")
-#undef constant
+    enum class Mode {
+        None,
+        ReadText,
+        Read,
+        WriteText,
+        Write,
+        AppendText,
+        Append
+    };
 
-    File(const std::string &path, const std::string &mode);
+public:
+    File(const std::string &path, Mode mode);
     File();
     ~File();
 
-    void open(const std::string &path, const std::string &mode);
+    void open(const std::string &path, Mode mode);
     void close();
 
     void write(const void *data, size_t size, size_t elementSize = 1);
@@ -33,11 +35,13 @@ public:
     Array<byte> read();
     std::string readStr();
 
-    bool isOpen();
+    bool isOpen() const;
     size_t size();
+    Mode getMode() const;
 
-protected:
-    FILE *file = nullptr;
+private:
+    FILE *m_file;
+    Mode m_mode;
 };
 }
 

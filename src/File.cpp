@@ -7,21 +7,18 @@
 using namespace std;
 
 namespace tulz {
-
-#define def_constant(name) constexpr char File::name[];
-def_constant(ReadText)
-def_constant(Read)
-def_constant(WriteText)
-def_constant(Write)
-def_constant(AppendText)
-def_constant(Append)
-#undef def_constant
-
-File::File(const string &path, const string &mode) {
+File::File(const string &path, Mode mode)
+    : File()
+{
     open(path, mode);
 }
 
-File::File() = default;
+File::File()
+    : m_file(nullptr),
+      m_mode(Mode::None)
+{
+    // see initializer list above
+}
 
 File::~File() {
     if (isOpen()) {
@@ -29,14 +26,29 @@ File::~File() {
     }
 }
 
-inline bool isWriteMode(const string &mode) {
-    return mode == File::WriteText || mode == File::Write || mode == File::AppendText || mode == File::Append;
-}
+void File::open(const string &path, Mode mode) {
+    auto isWriteMode = [&]()
+    {
+        return mode == Mode::WriteText || mode == Mode::Write || mode == Mode::AppendText || mode == Mode::Append;
+    };
 
-void File::open(const string &path, const string &mode) {
+    auto getModeStr = [&]()
+    {
+        switch (mode) {
+            case Mode::ReadText: return "r";
+            case Mode::Read: return "rb";
+            case Mode::WriteText: return "w";
+            case Mode::Write: return "wb";
+            case Mode::AppendText: return "a";
+            case Mode::Append: return "ab";
+            case Mode::None: throw invalid_argument("Invalid mode value: None");
+            default: throw invalid_argument("Invalid mode value");
+        }
+    };
+
     Path p(path);
 
-    if (!p.exists() && !isWriteMode(mode))
+    if (!p.exists() && !isWriteMode())
         throw Exception("File " + path + " not found", Path::NotFound);
 
     if (p.exists() && p.isDirectory())
@@ -45,20 +57,21 @@ void File::open(const string &path, const string &mode) {
     if (isOpen())
         close();
 
-    file = fopen(p.toString().c_str(), mode.c_str());
+    m_file = fopen(p.toString().c_str(), getModeStr());
+    m_mode = mode;
 }
 
 void File::close() {
     if (!isOpen())
         cerr << "Can't close file: file not opened";
     else {
-        fclose(file);
-        file = nullptr;
+        fclose(m_file);
+        m_file = nullptr;
     }
 }
 
 void File::write(const void *data, const size_t size, const size_t elementSize) {
-    fwrite(data, elementSize, size, file);
+    fwrite(data, elementSize, size, m_file);
 }
 
 void File::write(const Array<byte> &data) {
@@ -70,10 +83,33 @@ void File::write(const string &str) {
 }
 
 Array<byte> File::read() {
-    size_t fsize = size();
+    size_t fileSize;
 
-    Array<byte> result(fsize);
-    fread(result.m_array, 1, fsize, file);
+    if (m_mode == Mode::ReadText || m_mode == Mode::AppendText) {
+        // If the given stream is opened in text mode, Windows-style newlines are converted into
+        // Unix-style newlines. That is, carriage return-line feed (CRLF) pairs are replaced by
+        // single line feed (LF) characters.
+        // Thus, the file size may be larger than the received data
+        // https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/fread
+
+        fileSize = 0;
+
+        auto isEOF = [&]()
+        {
+            fgetc(m_file);
+            return feof(m_file);
+        };
+
+        while (!isEOF())
+            ++fileSize;
+
+        fseek(m_file, 0, SEEK_SET);
+    } else {
+        fileSize = size();
+    }
+
+    Array<byte> result(fileSize);
+    fread(result.m_array, 1, fileSize, m_file);
 
     return result;
 }
@@ -83,15 +119,19 @@ string File::readStr() {
     return string(reinterpret_cast<char const *>(data.array()), data.size());
 }
 
-bool File::isOpen() {
-    return file;
+bool File::isOpen() const {
+    return m_file;
 }
 
 size_t File::size() {
-    fseek(file, 0, SEEK_END);
-    size_t fsize = ftell(file);
-    fseek(file, 0, SEEK_SET);
+    fseek(m_file, 0, SEEK_END);
+    size_t fileSize = ftell(m_file);
+    fseek(m_file, 0, SEEK_SET);
 
-    return fsize;
+    return fileSize;
+}
+
+File::Mode File::getMode() const {
+    return m_mode;
 }
 }
