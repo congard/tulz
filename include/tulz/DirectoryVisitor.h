@@ -1,23 +1,23 @@
 #ifndef TULZ_DIRECTORYVISITOR_H
 #define TULZ_DIRECTORYVISITOR_H
 
-#include <string>
+#include <tulz/Path.h>
 
 namespace tulz {
 class DirectoryVisitor {
 public:
-    explicit DirectoryVisitor(const std::string &dir);
+    explicit DirectoryVisitor(const Path &dir);
     DirectoryVisitor();
     ~DirectoryVisitor();
 
-    void set(const std::string &dir);
-    const std::string& get() const;
+    void set(const Path &dir);
+    const Path& get() const;
 
     void visit();
     void restore();
 
 private:
-    std::string m_dir, m_oldDir;
+    Path m_dir, m_oldDir;
 };
 }
 
