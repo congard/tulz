@@ -1,18 +1,26 @@
 #include <tulz/Path.h>
+
 #include <tulz/StringUtils.h>
 #include <tulz/Exception.h>
-#include <dirent.h>
-#include <unistd.h>
 
 #ifdef __linux__
-#define getCurrentDir getcwd
-#elif __MINGW32__
-#define getCurrentDir _getcwd
+    #include <dirent.h>
+    #include <unistd.h>
+
+    #define setCurrentDir chdir
+    #define getCurrentDir getcwd
+#elif defined(_WIN32)
+    #include <Windows.h>
+
+    #define setCurrentDir SetCurrentDirectory
+    #define getCurrentDir(buffer, length) GetCurrentDirectory(length, buffer)
 #endif
 
 using namespace std;
 
 namespace tulz {
+Path::Path() = default;
+
 Path::Path(const string &path) {
     setPath(path);
 }
@@ -27,70 +35,98 @@ void Path::setPath(const string &path) {
     }
 }
 
-bool Path::exists() {
+bool Path::exists() const {
+#if defined(__linux__)
     FILE *file = fopen(m_path.c_str(), "r");
 
-    if (file)
+    if (file) {
         fclose(file);
+    }
 
     return file;
+#elif defined(_WIN32)
+    return GetFileAttributes(m_path.c_str()) != INVALID_FILE_ATTRIBUTES;
+#endif
 }
 
-bool Path::isFile() {
+bool Path::isFile() const {
+#if defined(__linux__)
     return exists() && !isDirectory();
+#elif defined(_WIN32)
+    auto attributes = GetFileAttributes(m_path.c_str());
+
+    return (attributes != INVALID_FILE_ATTRIBUTES) && !(attributes & FILE_ATTRIBUTE_DIRECTORY);
+#endif
 }
 
-bool Path::isDirectory() {
-    DIR *dir = opendir(m_path.c_str());
+bool Path::isDirectory() const {
+#if defined(__linux__)
+    auto dir = opendir(m_path.c_str());
 
-    if (dir)
+    if (dir) {
         closedir(dir);
+    }
 
     return dir;
+#elif defined(_WIN32)
+    auto attributes = GetFileAttributes(m_path.c_str());
+
+    return (attributes != INVALID_FILE_ATTRIBUTES) && (attributes & FILE_ATTRIBUTE_DIRECTORY);
+#endif
 }
 
-bool Path::isAbsolute() {
+inline bool isAbsolutePath(const string &path) {
 #ifdef __linux__
-    return m_path.find(Separator) == 0; // /home/folder
-#elif defined(__MINGW32__)
-    return m_path.find(Separator) == 2; // C:/folder
+    return path.find(Separator) == 0; // /home/folder
+#elif defined(_WIN32)
+    return path.find(':') == 1; // C:/folder
 #endif
+}
+
+bool Path::isAbsolute() const {
+    return isAbsolutePath(m_path);
 }
 
 #define checkExistence() \
 if (!exists()) \
     throw Exception(m_path + " not found", NotFound);
 
-size_t Path::size() {
+size_t Path::size() const {
     checkExistence()
 
     if (isFile()) {
         FILE *file = fopen(m_path.c_str(), "rb");
+
         fseek(file, 0, SEEK_END);
+
         size_t size = ftell(file);
+
         fclose(file);
 
         return size;
     } else {
-        vector<string> items = listChilds();
+        vector<Path> children = listChildren();
         size_t size = 0;
 
-        for (const auto & item : items) {
-            if (item == "." || item == "..")
-                continue;
+        for (const auto &child : children) {
+            const auto &childStr = child.toString();
 
-            size += Path(Path::join(m_path, item)).size();
+            if (childStr == "." || childStr == "..") {
+                continue;
+            }
+
+            size += Path::join(*this, child).size();
         }
 
         return size;
     }
 }
 
-string Path::toString() {
+const string& Path::toString() const {
     return m_path;
 }
 
-string Path::getParentDirectory() {
+Path Path::getParentDirectory() const {
     string path = m_path;
 
     size_t separatorPos = path.find_last_of("/\\");
@@ -104,19 +140,21 @@ string Path::getParentDirectory() {
 
     // 'dir' or '/', 'D:/' etc
     if (separatorPos == string::npos)
-        return ""; // means 'already here'
+        return {}; // means 'already here, no parent directory'
 
-    return path.erase(separatorPos, m_path.size());
+    return Path(path.erase(separatorPos, m_path.size()));
 }
 
-string Path::getPathName() {
-    return string(m_path).erase(0, m_path.find_last_of(Path::Separator) + 1);
+string Path::getPathName() const {
+    return string(m_path).erase(0, m_path.find_last_of("/\\") + 1);
 }
 
-vector<string> Path::listChilds() {
+vector<Path> Path::listChildren() const {
     checkExistence()
 
-    vector<string> result;
+    vector<Path> result;
+
+#if defined(__linux__)
     DIR *dir = opendir(m_path.c_str());
 
     if (!dir)
@@ -128,19 +166,43 @@ vector<string> Path::listChilds() {
         result.emplace_back(ent->d_name);
 
     closedir(dir);
+#elif defined(_WIN32)
+    string pattern(m_path);
+    pattern.append("\\*");
+
+    WIN32_FIND_DATA data;
+    HANDLE hFind;
+
+    if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
+        do {
+            result.emplace_back(data.cFileName);
+        } while (FindNextFile(hFind, &data) != 0);
+
+        FindClose(hFind);
+    }
+#endif
 
     return result;
 }
 
-void Path::setWorkingDirectory(const string &dir) {
-    chdir(dir.c_str());
+void Path::setWorkingDirectory(const Path &dir) {
+    setWorkingDirectory(dir.toString());
 }
 
-string Path::getWorkingDirectory() {
+void Path::setWorkingDirectory(const string &dir) {
+    setCurrentDir(dir.c_str());
+}
+
+Path Path::getWorkingDirectory() {
     char buff[FILENAME_MAX];
+
     getCurrentDir(buff, FILENAME_MAX);
 
-    return string(buff);
+    return Path(buff);
+}
+
+Path Path::join(const Path &p1, const Path &p2) {
+    return Path(join(p1.toString(), p2.toString()));
 }
 
 string Path::join(const string &p1, const string &p2) {
@@ -148,7 +210,7 @@ string Path::join(const string &p1, const string &p2) {
         return p2;
 
     // if p2 is absolute just return it
-    if (p2.front() == Separator)
+    if (isAbsolutePath(p2))
         return p2;
 
     if (p1.back() != Separator && p1.back() != SystemSeparator)

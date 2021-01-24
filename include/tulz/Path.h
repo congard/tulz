@@ -25,37 +25,54 @@ public:
 
 #ifdef __linux__
     static constexpr char SystemSeparator = '/';
-#elif defined(__MINGW32__)
+#elif defined(_WIN32)
     static constexpr char SystemSeparator = '\\';
 #endif
 
 public:
-    Path() = default;
+    Path();
     explicit Path(const std::string &path);
 
     void setPath(const std::string &path);
 
-    bool exists();
-    bool isFile();
-    bool isDirectory();
-    bool isAbsolute();
+    bool exists() const;
+    bool isFile() const;
+    bool isDirectory() const;
+    bool isAbsolute() const;
 
-    size_t size();
+    size_t size() const;
 
-    std::string toString();
-    std::string getParentDirectory();
-    std::string getPathName();
+    const std::string& toString() const;
+    std::string getPathName() const;
+    Path getParentDirectory() const;
 
-    std::vector<std::string> listChilds();
+    std::vector<Path> listChildren() const;
 
+    static void setWorkingDirectory(const Path &dir);
     static void setWorkingDirectory(const std::string &dir);
 
-    static std::string getWorkingDirectory();
+    static Path getWorkingDirectory();
+
+    static Path join(const Path &p1, const Path &p2);
     static std::string join(const std::string &p1, const std::string &p2);
+
+    template<typename ...Args>
+    static Path join(const Path &p1, const Path &p2, const Args& ...args) {
+        return join(join(p1, p2), args...);
+    }
+
+    template<typename ...Args>
+    static std::string join(const std::string &p1, const std::string &p2, const Args& ...args) {
+        return join(join(p1, p2), args...);
+    }
 
 protected:
     std::string m_path;
 };
+
+inline Path operator"" _p(const char* str, size_t len) {
+    return Path(std::string(str, len));
+}
 }
 
 #endif //TULZ_PATH_H
