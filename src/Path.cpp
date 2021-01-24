@@ -77,7 +77,7 @@ bool Path::isDirectory() const {
 
 inline bool isAbsolutePath(const string &path) {
 #ifdef __linux__
-    return path.find(Separator) == 0; // /home/folder
+    return path.find(Path::Separator) == 0; // /home/folder
 #elif defined(_WIN32)
     return path.find(':') == 1; // C:/folder
 #endif
