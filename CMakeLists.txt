@@ -13,3 +13,7 @@ add_library(tulz
         include/tulz/File.h src/File.cpp
         include/tulz/Exception.h src/Exception.cpp
         include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp)
+
+add_executable(tulz-examples examples/example.cpp)
+
+target_link_libraries(tulz-examples tulz)
