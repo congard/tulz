@@ -21,22 +21,23 @@ public:
     };
 
 public:
+    File(const Path &path, Mode mode);
     File(const std::string &path, Mode mode);
     File();
     ~File();
 
-    void open(const std::string &path, Mode mode);
+    void open(const Path &path, Mode mode);
     void close();
 
     void write(const void *data, size_t size, size_t elementSize = 1);
     void write(const Array<byte> &data);
     void write(const std::string &str);
 
-    Array<byte> read();
-    std::string readStr();
+    Array<byte> read() const;
+    std::string readStr() const;
 
     bool isOpen() const;
-    size_t size();
+    size_t size() const;
     Mode getMode() const;
 
 private:

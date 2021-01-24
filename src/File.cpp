@@ -7,18 +7,18 @@
 using namespace std;
 
 namespace tulz {
-File::File(const string &path, Mode mode)
+File::File(const Path &path, Mode mode)
     : File()
 {
     open(path, mode);
 }
 
+File::File(const string &path, Mode mode)
+    : File(Path(path), mode) {}
+
 File::File()
     : m_file(nullptr),
-      m_mode(Mode::None)
-{
-    // see initializer list above
-}
+      m_mode(Mode::None) {}
 
 File::~File() {
     if (isOpen()) {
@@ -26,7 +26,7 @@ File::~File() {
     }
 }
 
-void File::open(const string &path, Mode mode) {
+void File::open(const Path &path, Mode mode) {
     auto isWriteMode = [&]()
     {
         return mode == Mode::WriteText || mode == Mode::Write || mode == Mode::AppendText || mode == Mode::Append;
@@ -46,18 +46,18 @@ void File::open(const string &path, Mode mode) {
         }
     };
 
-    Path p(path);
+    const auto &pathStr = path.toString();
 
-    if (!p.exists() && !isWriteMode())
-        throw Exception("File " + path + " not found", Path::NotFound);
+    if (!path.exists() && !isWriteMode())
+        throw Exception("File " + pathStr + " not found", Path::NotFound);
 
-    if (p.exists() && p.isDirectory())
-        throw Exception(path + " is not file, it is directory", Path::NotFile);
+    if (path.exists() && path.isDirectory())
+        throw Exception(pathStr + " is not file, it is directory", Path::NotFile);
 
     if (isOpen())
         close();
 
-    m_file = fopen(p.toString().c_str(), getModeStr());
+    m_file = fopen(pathStr.c_str(), getModeStr());
     m_mode = mode;
 }
 
@@ -82,7 +82,7 @@ void File::write(const string &str) {
     write(str.c_str(), str.length());
 }
 
-Array<byte> File::read() {
+Array<byte> File::read() const {
     size_t fileSize;
 
     if (m_mode == Mode::ReadText || m_mode == Mode::AppendText) {
@@ -109,13 +109,15 @@ Array<byte> File::read() {
     }
 
     Array<byte> result(fileSize);
+
     fread(result.m_array, 1, fileSize, m_file);
 
     return result;
 }
 
-string File::readStr() {
+string File::readStr() const {
     auto data = read();
+
     return string(reinterpret_cast<char const *>(data.array()), data.size());
 }
 
@@ -123,9 +125,11 @@ bool File::isOpen() const {
     return m_file;
 }
 
-size_t File::size() {
+size_t File::size() const {
     fseek(m_file, 0, SEEK_END);
+
     size_t fileSize = ftell(m_file);
+
     fseek(m_file, 0, SEEK_SET);
 
     return fileSize;
