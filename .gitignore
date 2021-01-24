@@ -2,5 +2,6 @@
 .idea
 cmake-build-*
 
-# some tests for debugging
-test
+# Visual Studio folders
+.vs
+out
