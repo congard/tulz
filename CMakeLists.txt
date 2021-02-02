@@ -3,6 +3,10 @@ project(tulz)
 
 set(CMAKE_CXX_STANDARD 14)
 
+if (MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+endif()
+
 include_directories(include)
 
 add_library(tulz
