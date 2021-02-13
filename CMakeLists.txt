@@ -16,7 +16,8 @@ add_library(tulz
         include/tulz/macros.h
         include/tulz/File.h src/File.cpp
         include/tulz/Exception.h src/Exception.cpp
-        include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp)
+        include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp
+        include/tulz/DynamicLibrary.h src/DynamicLibrary.cpp)
 
 add_executable(tulz-examples examples/example.cpp)
 
