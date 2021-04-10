@@ -3,7 +3,12 @@
 
 #include <tulz/StringUtils.h>
 
+#include <tulz/threading/Thread.h>
+#include <tulz/threading/ThreadPool.h>
+#include <tulz/threading/MutexLocker.h>
+
 #include <iostream>
+#include <utility>
 
 using namespace tulz;
 using namespace std;
@@ -68,9 +73,61 @@ void regex() {
     }
 }
 
+void threading() {
+    cout << "\n=== threading ===\n\n";
+
+    class MyRunnable: public Runnable {
+    public:
+        explicit MyRunnable(string name)
+            : name(std::move(name)) {}
+
+        ~MyRunnable() override {
+            cout << "~MyRunnable (" << name << ")\n";
+        }
+
+        void run() override {
+            cout << "MyRunnable output begins (" << name << ")\n";
+            Thread::sleep(4s);
+            cout << "MyRunnable output ends (" << name << ")\n";
+        }
+
+    private:
+        string name;
+    };
+
+    ThreadPool pool;
+    pool.setMaxThreadCount(2);
+    pool.setExpiryTimeout(1000);
+
+    pool.start([&]() {
+        cout << "Lambda 1 first message\n";
+        Thread::sleep(2s);
+        cout << "Lambda 1 last message\n";
+    });
+
+    pool.start([&]() {
+        cout << "Lambda 2 first message\n";
+        Thread::sleep(3s);
+        cout << "Lambda 2 last message\n";
+    });
+
+    pool.start(new MyRunnable("foo"));
+    pool.start(new MyRunnable("bar"));
+
+    while (pool.getActiveThreadCount() > 0) {
+        pool.update();
+        Thread::sleep(500);
+    }
+
+    cout << "There are no active threads left in the pool\n";
+
+    pool.stop();
+}
+
 int main() {
     filesystem();
     regex();
+    threading();
 
     return 0;
 }
