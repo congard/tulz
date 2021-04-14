@@ -24,7 +24,7 @@ add_library(tulz
         include/tulz/threading/Thread.h src/threading/Thread.cpp
         include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp)
 
-if (UNIX)
+if (UNIX AND NOT ANDROID)
     set(LINK_LIBRARIES pthread)
 endif()
 

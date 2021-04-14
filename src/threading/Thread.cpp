@@ -33,6 +33,6 @@ std::thread& Thread::std_thread() {
 }
 
 void Thread::sleep(long ms) {
-    sleep(std::operator""ms(ms));
+    sleep(std::chrono::duration<long double, std::milli> {ms});
 }
 }
