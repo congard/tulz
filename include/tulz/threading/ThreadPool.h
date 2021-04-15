@@ -17,9 +17,9 @@ class ThreadPool {
 public:
     ThreadPool();
 
-    template<typename T>
-    typename std::enable_if_t<!Runnable::isRunnable<T>::value, void> start(T ptr) {
-        start(new TRunnable<T>(ptr));
+    template<typename T, typename ...Args>
+    typename std::enable_if_t<!Runnable::isRunnable<T>::value, void> start(T ptr, Args&&... args) {
+        start(new TRunnable<T, Args...>(ptr, std::forward<Args>(args)...));
     }
 
     void start(Runnable *runnable);
@@ -52,18 +52,26 @@ private:
     Mutex m_queueMutex;
 
 private:
-    template<typename T>
+    template<typename T, typename ...Args>
     class TRunnable: public Runnable {
     public:
-        explicit TRunnable(T ptr)
-            : m_ptr(ptr) {}
+        explicit TRunnable(T ptr, Args&&... args)
+            : m_ptr(ptr),
+              m_args(std::forward<Args>(args)...) {}
 
         void run() override {
-            m_ptr();
+            invoke(std::index_sequence_for<Args...>());
+        }
+
+    private:
+        template<size_t... I>
+        constexpr void invoke(std::index_sequence<I...>) {
+            m_ptr(std::get<I>(m_args)...);
         }
 
     private:
         T m_ptr;
+        std::tuple<Args...> m_args;
     };
 };
 }

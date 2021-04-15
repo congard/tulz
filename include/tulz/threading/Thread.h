@@ -10,15 +10,15 @@ class Thread {
 public:
     Thread() = default;
 
-    template<typename T>
-    explicit Thread(T ptr) {
-        start(ptr);
+    template<typename T, typename ...Args>
+    explicit Thread(T ptr, Args&&... args) {
+        start(ptr, std::forward<Args>(args)...);
     }
 
-    template<typename T>
-    typename std::enable_if_t<!Runnable::isRunnable<T>::value, void> start(T ptr) {
+    template<typename T, typename ...Args>
+    typename std::enable_if_t<!Runnable::isRunnable<T>::value, void> start(T ptr, Args&&... args) {
         m_thread = std::thread([&]() {
-            ptr();
+            ptr(std::forward<Args>(args)...);
             m_isFinished = true;
         });
     }

@@ -99,17 +99,18 @@ void threading() {
     pool.setMaxThreadCount(2);
     pool.setExpiryTimeout(1000);
 
-    pool.start([&]() {
+    pool.start([]() {
         cout << "Lambda 1 first message\n";
         Thread::sleep(2s);
         cout << "Lambda 1 last message\n";
     });
 
-    pool.start([&]() {
+    pool.start([](const string &arg) {
         cout << "Lambda 2 first message\n";
+        cout << "Lambda 2 arg is: '" << arg << "'\n";
         Thread::sleep(3s);
         cout << "Lambda 2 last message\n";
-    });
+    }, "just a string argument");
 
     pool.start(new MyRunnable("foo"));
     pool.start(new MyRunnable("bar"));
