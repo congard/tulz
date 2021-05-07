@@ -3,6 +3,8 @@
 #include <tulz/StringUtils.h>
 #include <tulz/Exception.h>
 
+#include <cstring>
+
 #ifdef __linux__
     #include <dirent.h>
     #include <unistd.h>
@@ -105,16 +107,10 @@ size_t Path::size() const {
 
         return size;
     } else {
-        vector<Path> children = listChildren();
+        auto children = listChildren();
         size_t size = 0;
 
         for (const auto &child : children) {
-            const auto &childStr = child.toString();
-
-            if (childStr == "." || childStr == "..") {
-                continue;
-            }
-
             size += Path::join(*this, child).size();
         }
 
@@ -149,24 +145,32 @@ string Path::getPathName() const {
     return string(m_path).erase(0, m_path.find_last_of("/\\") + 1);
 }
 
-vector<Path> Path::listChildren() const {
+forward_list<Path> Path::listChildren() const {
     checkExistence()
 
-    vector<Path> result;
+    forward_list<Path> result;
 
 #if defined(__linux__)
     DIR *dir = opendir(m_path.c_str());
 
-    if (!dir)
+    if (dir == nullptr) {
         throw Exception(m_path + " is not directory", NotDirectory);
+    }
 
     dirent *ent;
 
-    while ((ent = readdir(dir)) != nullptr)
-        result.emplace_back(ent->d_name);
+    while ((ent = readdir(dir)) != nullptr) {
+        auto name = ent->d_name;
+
+        if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
+            continue;
+        }
+
+        result.emplace_front(name);
+    }
 
     closedir(dir);
-#elif defined(_WIN32)
+#elif defined(_WIN32) // TODO: check for '.' and '..'
     string pattern(m_path);
     pattern.append("\\*");
 
@@ -175,7 +179,7 @@ vector<Path> Path::listChildren() const {
 
     if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
         do {
-            result.emplace_back(data.cFileName);
+            result.emplace_front(data.cFileName);
         } while (FindNextFile(hFind, &data) != 0);
 
         FindClose(hFind);

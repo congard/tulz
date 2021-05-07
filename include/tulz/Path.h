@@ -4,7 +4,7 @@
 #include <tulz/Array.h>
 
 #include <string>
-#include <vector>
+#include <forward_list>
 
 namespace tulz {
 typedef unsigned char byte;
@@ -46,7 +46,7 @@ public:
     std::string getPathName() const;
     Path getParentDirectory() const;
 
-    std::vector<Path> listChildren() const;
+    std::forward_list<Path> listChildren() const;
 
     static void setWorkingDirectory(const Path &dir);
     static void setWorkingDirectory(const std::string &dir);
