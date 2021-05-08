@@ -211,6 +211,15 @@ Path Path::getWorkingDirectory() {
     return Path(buff);
 }
 
+Path Path::getSystemPath() {
+#if defined(__linux__)
+    return "/"_p;
+#elif defined(_WIN32)
+    char separator[] = {SystemSeparator, '\0'};
+    return Path(strcat(getenv("SystemDrive"), separator));
+#endif
+}
+
 Path Path::join(const Path &p1, const Path &p2) {
     return Path(join(p1.toString(), p2.toString()));
 }

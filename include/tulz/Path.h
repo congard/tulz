@@ -52,6 +52,7 @@ public:
     static void setWorkingDirectory(const std::string &dir);
 
     static Path getWorkingDirectory();
+    static Path getSystemPath();
 
     static Path join(const Path &p1, const Path &p2);
     static std::string join(const std::string &p1, const std::string &p2);
