@@ -1,6 +1,5 @@
 #include <tulz/Path.h>
 
-#include <tulz/StringUtils.h>
 #include <tulz/Exception.h>
 
 #include <cstring>
@@ -29,12 +28,6 @@ Path::Path(const string &path) {
 
 void Path::setPath(const string &path) {
     m_path = path;
-
-    StringUtils::replaceAll(m_path, "\\", "/");
-
-    if (m_path.back() == Separator) {
-        m_path.erase(m_path.length() - 1, 1);
-    }
 }
 
 bool Path::exists() const {
@@ -142,7 +135,13 @@ Path Path::getParentDirectory() const {
 }
 
 string Path::getPathName() const {
-    return string(m_path).erase(0, m_path.find_last_of("/\\") + 1);
+    size_t index;
+
+    if ((index = m_path.find_last_of("/\\")) == m_path.size() - 1) {
+        index = m_path.find_last_of("/\\", m_path.size() - 2);
+    }
+
+    return string(m_path).erase(0, index + 1);
 }
 
 forward_list<Path> Path::listChildren() const {
