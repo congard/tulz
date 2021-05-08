@@ -170,7 +170,7 @@ forward_list<Path> Path::listChildren() const {
     }
 
     closedir(dir);
-#elif defined(_WIN32) // TODO: check for '.' and '..'
+#elif defined(_WIN32)
     string pattern(m_path);
     pattern.append("\\*");
 
@@ -179,7 +179,13 @@ forward_list<Path> Path::listChildren() const {
 
     if ((hFind = FindFirstFile(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE) {
         do {
-            result.emplace_front(data.cFileName);
+            auto name = data.cFileName;
+
+            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
+                continue;
+            }
+
+            result.emplace_front(name);
         } while (FindNextFile(hFind, &data) != 0);
 
         FindClose(hFind);
