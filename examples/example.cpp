@@ -23,6 +23,7 @@ void filesystem() {
         newWorkingDirectory = newWorkingDirectory.getParentDirectory();
     }
 
+    cout << "System path: " << Path::getSystemPath().toString() << "\n";
     cout << "Working directory: " << workingDirectory.toString() << "\n";
     cout << "Setting working directory to " << newWorkingDirectory.toString() << "\n";
 
