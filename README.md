@@ -6,11 +6,11 @@ Tulz is cross-platform C++14 tools library for C++ development
 
 Tested under:
 
-| Linux | Windows              |
-|-------|----------------------|
-| GCC   | MSVC 19.26.28806 x64 |
-| CLang | GCC 8.1.0, MinGW-w64 |
-|       | CLang 10.0.0         |
+| Linux | Windows              | Android          |
+|-------|----------------------|------------------|
+| GCC   | MSVC 19.26.28806 x64 | NDK 22.0.7026061 |
+| CLang | GCC 8.1.0, MinGW-w64 |                  |
+|       | CLang 10.0.0         |                  |
 
 ## Installation
 
