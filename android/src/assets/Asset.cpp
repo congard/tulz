@@ -34,16 +34,16 @@ void Asset::close() {
     }
 }
 
-void Asset::read(void *buffer, size_t count) const {
-    AAsset_read(m_javaAsset, buffer, count);
+int Asset::read(void *buffer, size_t count) const {
+    return AAsset_read(m_javaAsset, buffer, count);
 }
 
-void Asset::seek32(off_t offset, int whence) {
-    AAsset_seek(m_javaAsset, offset, whence);
+off_t Asset::seek32(off_t offset, int whence) {
+    return AAsset_seek(m_javaAsset, offset, whence);
 }
 
-void Asset::seek(off64_t offset, int whence) {
-    AAsset_seek64(m_javaAsset, offset, whence);
+off64_t Asset::seek(off64_t offset, int whence) {
+    return AAsset_seek64(m_javaAsset, offset, whence);
 }
 
 off_t Asset::tell32() const {

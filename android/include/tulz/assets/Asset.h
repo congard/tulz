@@ -26,9 +26,9 @@ public:
     void open(const std::string &path, Mode mode);
     void close();
 
-    void read(void *buffer, size_t count) const;
-    void seek32(off_t offset, int whence);
-    void seek(off64_t offset, int whence);
+    int read(void *buffer, size_t count) const;
+    off_t seek32(off_t offset, int whence);
+    off64_t seek(off64_t offset, int whence);
 
     off_t tell32() const;
     off64_t tell() const;
