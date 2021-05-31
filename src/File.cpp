@@ -82,8 +82,14 @@ void File::write(const string &str) {
     write(str.c_str(), str.length());
 }
 
-Array<byte> File::read() const {
+size_t File::read(void *buffer, size_t size, size_t count) const {
+    return fread(buffer, size, count, m_file);
+}
+
+Array<byte> File::read() {
     size_t fileSize;
+
+    seek(0, Origin::Start);
 
     if (m_mode == Mode::ReadText || m_mode == Mode::AppendText) {
         // If the given stream is opened in text mode, Windows-style newlines are converted into
@@ -94,43 +100,49 @@ Array<byte> File::read() const {
 
         fileSize = 0;
 
-        auto isEOF = [&]()
-        {
+        auto isEOF = [&]() {
             fgetc(m_file);
             return feof(m_file);
         };
 
-        while (!isEOF())
+        while (!isEOF()) {
             ++fileSize;
+        }
 
-        fseek(m_file, 0, SEEK_SET);
+        seek(0, Origin::Start);
     } else {
         fileSize = size();
     }
 
     Array<byte> result(fileSize);
-
-    fread(result.m_array, 1, fileSize, m_file);
+    read(result.m_array, 1, fileSize);
 
     return result;
 }
 
-string File::readStr() const {
+string File::readStr() {
     auto data = read();
-
     return string(reinterpret_cast<char const *>(data.array()), data.size());
+}
+
+int File::seek(long offset, Origin origin) {
+    return fseek(m_file, offset, static_cast<int>(origin));
 }
 
 bool File::isOpen() const {
     return m_file;
 }
 
+long File::tell() const {
+    return ftell(m_file);
+}
+
 size_t File::size() const {
+    auto prevPos = tell();
+
     fseek(m_file, 0, SEEK_END);
-
-    size_t fileSize = ftell(m_file);
-
-    fseek(m_file, 0, SEEK_SET);
+    size_t fileSize = tell();
+    fseek(m_file, prevPos, SEEK_SET);
 
     return fileSize;
 }

@@ -20,6 +20,12 @@ public:
         Append
     };
 
+    enum class Origin {
+        Start = SEEK_SET,
+        Current = SEEK_CUR,
+        End = SEEK_END
+    };
+
 public:
     File(const Path &path, Mode mode);
     File(const std::string &path, Mode mode);
@@ -33,10 +39,14 @@ public:
     void write(const Array<byte> &data);
     void write(const std::string &str);
 
-    Array<byte> read() const;
-    std::string readStr() const;
+    size_t read(void *buffer, size_t size, size_t count = 1) const;
+    Array<byte> read();
+    std::string readStr();
+
+    int seek(long offset, Origin origin);
 
     bool isOpen() const;
+    long tell() const;
     size_t size() const;
     Mode getMode() const;
 
