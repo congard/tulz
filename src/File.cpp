@@ -70,16 +70,16 @@ void File::close() {
     }
 }
 
-void File::write(const void *data, const size_t size, const size_t elementSize) {
-    fwrite(data, elementSize, size, m_file);
+size_t File::write(const void *data, const size_t size, const size_t elementSize) {
+    return fwrite(data, elementSize, size, m_file);
 }
 
-void File::write(const Array<byte> &data) {
-    write(data.array(), data.size());
+size_t File::write(const Array<byte> &data) {
+    return write(data.array(), data.size());
 }
 
-void File::write(const string &str) {
-    write(str.c_str(), str.length());
+size_t File::write(const string &str) {
+    return write(str.c_str(), str.length());
 }
 
 size_t File::read(void *buffer, size_t size, size_t count) const {
