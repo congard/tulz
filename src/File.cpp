@@ -70,6 +70,10 @@ void File::close() {
     }
 }
 
+int File::flush() {
+    return fflush(m_file);
+}
+
 size_t File::write(const void *data, const size_t size, const size_t elementSize) {
     return fwrite(data, elementSize, size, m_file);
 }

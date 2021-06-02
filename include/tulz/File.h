@@ -35,6 +35,8 @@ public:
     void open(const Path &path, Mode mode);
     void close();
 
+    int flush();
+
     size_t write(const void *data, size_t size, size_t elementSize = 1);
     size_t write(const Array<byte> &data);
     size_t write(const std::string &str);
