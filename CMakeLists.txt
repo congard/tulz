@@ -38,7 +38,11 @@ add_library(tulz
         ${TULZ_ANDROID_SOURCES})
 
 if (UNIX AND NOT ANDROID)
-    set(LINK_LIBRARIES pthread)
+    set(LINK_LIBRARIES ${LINK_LIBRARIES} pthread)
+endif()
+
+if (ANDROID)
+    set(LINK_LIBRARIES ${LINK_LIBRARIES} android)
 endif()
 
 target_link_libraries(tulz ${LINK_LIBRARIES})
