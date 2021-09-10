@@ -22,7 +22,8 @@ set(TULZ_SOURCES
         include/tulz/threading/MutexLocker.h src/threading/MutexLocker.cpp
         include/tulz/threading/Runnable.h src/threading/Runnable.cpp
         include/tulz/threading/Thread.h src/threading/Thread.cpp
-        include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp)
+        include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp
+        src/LocaleInfo.cpp include/tulz/LocaleInfo.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES

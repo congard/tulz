@@ -7,14 +7,42 @@
 #include <tulz/threading/ThreadPool.h>
 #include <tulz/threading/MutexLocker.h>
 
+#include <tulz/LocaleInfo.h>
+
 #include <iostream>
 #include <utility>
+#include <locale>
 
 using namespace tulz;
 using namespace std;
 
+void localeInfo() {
+    cout << "=== locale info ===\n";
+
+    auto showInfoFor = [](const char *loc) {
+        cout << "\nInfo for " << loc << "\n";
+
+        auto info = LocaleInfo::get(loc);
+
+        cout << "Language code: " << info.languageCode << "\n";
+        cout << "Languages: ";
+
+        for (auto lang: info.languages) {
+            cout << lang << "\n";
+        }
+
+        cout << "Country code: " << info.countryCode << "\n";
+        cout << "Country: " << info.country << "\n";
+    };
+
+    showInfoFor("cu_BG");
+    showInfoFor("Church Slavic_Bulgaria");
+    showInfoFor("English_United States.1252");
+    showInfoFor(locale("").name().c_str());
+}
+
 void filesystem() {
-    cout << "=== filesystem ===\n\n";
+    cout << "\n=== filesystem ===\n\n";
 
     auto workingDirectory = Path::getWorkingDirectory();
     auto newWorkingDirectory = workingDirectory;
@@ -127,6 +155,7 @@ void threading() {
 }
 
 int main() {
+    localeInfo();
     filesystem();
     regex();
     threading();
