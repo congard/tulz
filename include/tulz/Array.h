@@ -32,10 +32,23 @@ private:
             return *this;
         }
 
+        // Prefix decrement
+        __iterator& operator--() {
+            --m_index;
+            return *this;
+        }
+
         // Postfix increment
         const __iterator operator++(int) {
             __iterator it = *this;
             ++(*this);
+            return it;
+        }
+
+        // Postfix decrement
+        const __iterator operator--(int) {
+            __iterator it = *this;
+            --(*this);
             return it;
         }
 
@@ -59,6 +72,10 @@ private:
             __iterator it = *this;
             it -= i;
             return it;
+        }
+
+        ssize_t operator-(__iterator other) {
+            return m_index - other.m_index;
         }
 
         bool operator==(__iterator other) const {
