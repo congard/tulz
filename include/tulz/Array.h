@@ -4,15 +4,100 @@
 #include <cstddef>
 #include <cstring>
 #include <algorithm>
+#include <initializer_list>
 
 namespace tulz {
-
 /**
  * Container for C array
  * @tparam T
  */
 template <typename T>
 class Array {
+private:
+    template<typename Type, typename Container>
+    class __iterator {
+    public:
+        using iterator_category = std::random_access_iterator_tag;
+        using value_type = Type;
+        using difference_type = ssize_t;
+        using pointer = Type*;
+        using reference = Type&;
+
+        explicit __iterator(Container &array, size_t index = 0)
+            : m_array(array), m_index(index) {}
+
+        // Prefix increment
+        __iterator& operator++() {
+            ++m_index;
+            return *this;
+        }
+
+        // Postfix increment
+        const __iterator operator++(int) {
+            __iterator it = *this;
+            ++(*this);
+            return it;
+        }
+
+        __iterator& operator+=(ssize_t i) {
+            m_index += i;
+            return *this;
+        }
+
+        __iterator& operator-=(ssize_t i) {
+            m_index -= i;
+            return *this;
+        }
+
+        __iterator operator+(ssize_t i) {
+            __iterator it = *this;
+            it += i;
+            return it;
+        }
+
+        __iterator operator-(ssize_t i) {
+            __iterator it = *this;
+            it -= i;
+            return it;
+        }
+
+        bool operator==(__iterator other) const {
+            return m_index == other.m_index;
+        }
+
+        bool operator!=(__iterator other) const {
+            return !(*this == other);
+        }
+
+        bool operator<(__iterator other) const {
+            return m_index < other.m_index;
+        }
+
+        bool operator>(__iterator other) const {
+            return m_index > other.m_index;
+        }
+
+        bool operator<=(__iterator other) const {
+            return m_index <= other.m_index;
+        }
+
+        bool operator>=(__iterator other) const {
+            return m_index >= other.m_index;
+        }
+
+        reference operator*() const {
+            return m_array[m_index];
+        }
+
+    private:
+        Container &m_array;
+        size_t m_index;
+    };
+
+public:
+    using iterator = __iterator<T, Array<T>>;
+    using const_iterator = __iterator<const T, const Array<T>>;
+
 public:
     using value_type = T;
 
@@ -36,6 +121,17 @@ public:
         }
 
         m_size = size;
+    }
+
+    Array(std::initializer_list<T> initializerList) {
+        m_size = initializerList.size();
+        m_array = static_cast<T*>(malloc(m_size * sizeof(T)));
+
+        size_t i = 0;
+
+        for (const T &e : initializerList) {
+            new (&m_array[i++]) T(std::move(e));
+        }
     }
 
     explicit Array(size_t size) {
@@ -135,6 +231,30 @@ public:
 
     bool empty() const {
         return m_size == 0;
+    }
+
+    iterator begin() {
+        return iterator(*this, 0);
+    }
+
+    iterator end() {
+        return iterator(*this, size());
+    }
+
+    const_iterator begin() const {
+        return const_iterator(*this, 0);
+    }
+
+    const_iterator end() const {
+        return const_iterator(*this, size());
+    }
+
+    const_iterator cbegin() const {
+        return begin();
+    }
+
+    const_iterator cend() const {
+        return end();
     }
 
     void swap(Array<T> &other) {
