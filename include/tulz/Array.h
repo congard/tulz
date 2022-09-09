@@ -274,6 +274,14 @@ public:
         return end();
     }
 
+    T& front() noexcept {
+        return m_array[0];
+    }
+
+    T& back() noexcept {
+        return m_array[m_size - 1];
+    }
+
     void swap(Array<T> &other) {
         std::swap(m_size, other.m_size);
         std::swap(m_array, other.m_array);
