@@ -1,6 +1,6 @@
 # Tulz
 
-Tulz is cross-platform C++14 tools library for C++ development
+Tulz is cross-platform C++17 tools library for C++ development
 
 ## Compilers support
 

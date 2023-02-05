@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(tulz)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 if (MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
