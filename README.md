@@ -18,6 +18,13 @@ Tested under:
 2. Add tulz to your project `add_subdirectory(your_libs_folder/tulz)`
 3. After `add_executable(your_project ...)` add `target_link_libraries(your_project tulz)`
 
+## Components
+
+1. [test](include/tulz/test)
+2. [threading](include/tulz/threading)
+3. io
+4. dll
+
 ## Examples
 
 You can find example in [examples/example.cpp](examples/example.cpp)
@@ -27,7 +34,3 @@ Note that you must clone this repository to `tulz` directory to be able to run e
 ## Donate
 
 <b>Payeer:</b> P36281059
-
-Or you can do it even without finance. Just open [this](http://fainbory.com/8aWY) link
-
-Thank you.

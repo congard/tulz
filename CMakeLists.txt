@@ -23,7 +23,9 @@ set(TULZ_SOURCES
         include/tulz/threading/Runnable.h src/threading/Runnable.cpp
         include/tulz/threading/Thread.h src/threading/Thread.cpp
         include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp
-        src/LocaleInfo.cpp include/tulz/LocaleInfo.h)
+        src/LocaleInfo.cpp include/tulz/LocaleInfo.h
+        src/test/Test.cpp include/tulz/test/Test.h
+        include/tulz/test/TestDetails.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
