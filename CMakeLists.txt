@@ -25,7 +25,10 @@ set(TULZ_SOURCES
         include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp
         src/LocaleInfo.cpp include/tulz/LocaleInfo.h
         src/test/Test.cpp include/tulz/test/Test.h
-        include/tulz/test/TestDetails.h)
+        include/tulz/test/TestDetails.h
+        src/observer/Observer.cpp include/tulz/observer/Observer.h
+        src/observer/Subject.cpp include/tulz/observer/Subject.h
+        src/observer/ObserverFunction.cpp include/tulz/observer/ObserverFunction.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES

@@ -20,10 +20,11 @@ Tested under:
 
 ## Components
 
-1. [test](include/tulz/test)
-2. [threading](include/tulz/threading)
-3. io
-4. dll
+1. [observer](include/tulz/observer)
+2. [test](include/tulz/test)
+3. [threading](include/tulz/threading)
+4. io
+5. dll
 
 ## Examples
 
