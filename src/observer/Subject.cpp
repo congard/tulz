@@ -24,6 +24,14 @@ void Subject::unsubscribe(Observer *observer) {
     for (auto it = m_observers.begin(); it != m_observers.end(); m_lastObserverIt = it++);
 }
 
+void Subject::subscribe(Observer &observer) {
+    subscribe(&observer);
+}
+
+void Subject::unsubscribe(Observer &observer) {
+    unsubscribe(&observer);
+}
+
 void Subject::notifyAll() {
     for (auto observer : m_observers) {
         observer->notify();
