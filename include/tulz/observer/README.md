@@ -41,3 +41,10 @@ observerFunction1
 observerFunction2
 observerFunction0
 ```
+
+## TODO
+
+It might be worth implementing:
+
+1. `SynchronizedSubject` - thread-safe version of `Subject`
+2. `ParallelSubject` - `SynchronizedSubject` that notifies observers in a parallel way
