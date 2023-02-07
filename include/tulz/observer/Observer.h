@@ -1,23 +1,10 @@
 #ifndef TULZ_OBSERVER_H
 #define TULZ_OBSERVER_H
 
+#include <functional>
+
 namespace tulz {
-class Subject;
-
-class Observer {
-    friend class Subject;
-
-public:
-    Observer();
-    virtual ~Observer();
-
-    virtual void notify() = 0;
-
-    Subject* getSubject() const;
-
-protected:
-    Subject *m_subject;
-};
+using Observer = std::function<void()>;
 }
 
 #endif //TULZ_OBSERVER_H

@@ -1,40 +1,37 @@
 #include <tulz/observer/Subject.h>
-#include <algorithm>
+#include <stdexcept>
 
 namespace tulz {
 Subject::Subject()
     : m_lastObserverIt(m_observers.before_begin()) {}
 
-void Subject::subscribe(Observer *observer) {
-    auto it = std::find(m_observers.begin(), m_observers.end(), observer);
-
-    // check if this observer is already added
-    if (it != m_observers.end())
-        return;
-
-    observer->m_subject = this;
-
-    m_observers.insert_after(m_lastObserverIt, observer);
+Subscription Subject::subscribe(const Observer &observer) {
+    auto &inserted = *m_observers.insert_after(m_lastObserverIt, observer);
     ++m_lastObserverIt;
+    return {this, &inserted};
 }
 
-void Subject::unsubscribe(Observer *observer) {
-    m_observers.remove(observer);
+void Subject::unsubscribe(Subscription &subscription) {
+    if (!subscription.isValid())
+        throw std::invalid_argument("Invalid subscription");
+
+    if (this != subscription.m_subject)
+        throw std::runtime_error("Cannot unsubscribe subscription that doesn't belong to this subject");
+
+    m_observers.remove_if([&subscription](const Observer &observer) {
+        return &observer == subscription.m_observer;
+    });
+
     m_lastObserverIt = m_observers.before_begin();
     for (auto it = m_observers.begin(); it != m_observers.end(); m_lastObserverIt = it++);
+
+    subscription.m_subject = nullptr;
+    subscription.m_observer = nullptr;
 }
 
-void Subject::subscribe(Observer &observer) {
-    subscribe(&observer);
-}
-
-void Subject::unsubscribe(Observer &observer) {
-    unsubscribe(&observer);
-}
-
-void Subject::notifyAll() {
-    for (auto observer : m_observers) {
-        observer->notify();
+void Subject::notify() {
+    for (auto &observer : m_observers) {
+        observer();
     }
 }
 }

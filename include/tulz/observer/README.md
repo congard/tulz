@@ -9,37 +9,27 @@ Note: `Subject` is not thread safe
 ```c++
 Subject subject;
 
-ObserverFunction observerFunction0([]() {
-    cout << "observerFunction0\n";
+auto sub1 = subject.subscribe([]() {
+    cout << "subscription1\n";
 });
 
-subject.subscribe(&observerFunction0);
+auto sub2 = subject.subscribe([]() {
+    cout << "subscription2\n";
+});
 
-{
-    ObserverFunction observerFunction1([]() {
-        cout << "observerFunction1\n";
-    });
+subject.notify();
 
-    ObserverFunction observerFunction2([]() {
-        cout << "observerFunction2\n";
-    });
+sub2.unsubscribe();
 
-    subject.subscribe(&observerFunction1);
-    subject.subscribe(&observerFunction2);
-
-    subject.notifyAll();
-}
-
-subject.notifyAll();
+subject.notify();
 ```
 
 Output:
 
 ```
-observerFunction0
-observerFunction1
-observerFunction2
-observerFunction0
+subscription1
+subscription2
+subscription1
 ```
 
 ## TODO

@@ -4,22 +4,20 @@
 #include <forward_list>
 
 #include "Observer.h"
+#include "Subscription.h"
 
 namespace tulz {
 class Subject {
 public:
     Subject();
 
-    void subscribe(Observer *observer);
-    void unsubscribe(Observer *observer);
+    Subscription subscribe(const Observer &observer);
+    void unsubscribe(Subscription &subscription);
 
-    void subscribe(Observer &observer);
-    void unsubscribe(Observer &observer);
-
-    void notifyAll();
+    void notify();
 
 private:
-    std::forward_list<Observer*> m_observers;
+    std::forward_list<Observer> m_observers;
     decltype(m_observers)::iterator m_lastObserverIt;
 };
 }

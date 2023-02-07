@@ -26,9 +26,9 @@ set(TULZ_SOURCES
         src/LocaleInfo.cpp include/tulz/LocaleInfo.h
         src/test/Test.cpp include/tulz/test/Test.h
         include/tulz/test/TestDetails.h
-        src/observer/Observer.cpp include/tulz/observer/Observer.h
+        include/tulz/observer/Observer.h
         src/observer/Subject.cpp include/tulz/observer/Subject.h
-        src/observer/ObserverFunction.cpp include/tulz/observer/ObserverFunction.h)
+        src/observer/Subscription.cpp include/tulz/observer/Subscription.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
