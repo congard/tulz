@@ -6,6 +6,8 @@ Note: `Subject` is not thread safe
 
 ## Usage
 
+### Subject
+
 ```c++
 Subject subject;
 
@@ -30,6 +32,25 @@ Output:
 subscription1
 subscription2
 subscription1
+```
+
+### Observable
+
+```c++
+ObservableInt val {0};
+val.subscribe([&]() {
+    cout << "Value changed: " << *val << "\n";
+});
+
+val = 5;
+--val;
+```
+
+Output:
+
+```
+Value changed: 5
+Value changed: 4
 ```
 
 ## TODO

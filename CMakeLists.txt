@@ -28,7 +28,9 @@ set(TULZ_SOURCES
         include/tulz/test/TestDetails.h
         include/tulz/observer/Observer.h
         src/observer/Subject.cpp include/tulz/observer/Subject.h
-        src/observer/Subscription.cpp include/tulz/observer/Subscription.h)
+        src/observer/Subscription.cpp include/tulz/observer/Subscription.h
+        include/tulz/observer/Observable.h
+        include/tulz/observer/ObservableNumber.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
