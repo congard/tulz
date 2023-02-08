@@ -10,6 +10,9 @@ class Subscription {
     friend class Subject;
 
 public:
+    Subscription(const Subscription&) = delete;
+    Subscription& operator=(const Subscription&) = delete;
+
     void unsubscribe();
 
     Subject* getSubject() const;
