@@ -2,6 +2,20 @@
 #include <tulz/observer/Subject.h>
 
 namespace tulz {
+Subscription::Subscription(Subscription &&rhs) noexcept {
+    *this = std::move(rhs);
+}
+
+Subscription& Subscription::operator=(Subscription &&rhs) noexcept {
+    if (&rhs == this)
+        return *this;
+
+    std::swap(m_subject, rhs.m_subject);
+    std::swap(m_observer, rhs.m_observer);
+
+    return *this;
+}
+
 void Subscription::unsubscribe() {
     m_subject->unsubscribe(*this);
 }

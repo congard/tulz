@@ -13,6 +13,9 @@ public:
     Subscription(const Subscription&) = delete;
     Subscription& operator=(const Subscription&) = delete;
 
+    Subscription(Subscription&&) noexcept;
+    Subscription& operator=(Subscription&&) noexcept;
+
     void unsubscribe();
 
     Subject* getSubject() const;
@@ -23,8 +26,8 @@ private:
     Subscription(Subject *subject, Observer *observer);
 
 private:
-    Subject *m_subject;
-    Observer *m_observer;
+    Subject *m_subject {nullptr};
+    Observer *m_observer {nullptr};
 };
 }
 
