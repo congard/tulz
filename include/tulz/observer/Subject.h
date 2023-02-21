@@ -2,6 +2,7 @@
 #define TULZ_SUBJECT_H
 
 #include <forward_list>
+#include <set>
 
 #include "Observer.h"
 #include "Subscription.h"
@@ -18,7 +19,7 @@ public:
 
 private:
     std::forward_list<Observer> m_observers;
-    decltype(m_observers)::iterator m_lastObserverIt;
+    std::set<Observer*> m_observersSet;
 };
 }
 

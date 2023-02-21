@@ -2,12 +2,11 @@
 #include <stdexcept>
 
 namespace tulz {
-Subject::Subject()
-    : m_lastObserverIt(m_observers.before_begin()) {}
+Subject::Subject() = default;
 
 Subscription Subject::subscribe(const Observer &observer) {
-    auto &inserted = *m_observers.insert_after(m_lastObserverIt, observer);
-    ++m_lastObserverIt;
+    auto &inserted = m_observers.emplace_front(observer);
+    m_observersSet.emplace(&inserted);
     return {this, &inserted};
 }
 
@@ -22,16 +21,22 @@ void Subject::unsubscribe(Subscription &subscription) {
         return &observer == subscription.m_observer;
     });
 
-    m_lastObserverIt = m_observers.before_begin();
-    for (auto it = m_observers.begin(); it != m_observers.end(); m_lastObserverIt = it++);
+    m_observersSet.erase(subscription.m_observer);
 
     subscription.m_subject = nullptr;
     subscription.m_observer = nullptr;
 }
 
 void Subject::notify() {
-    for (auto &observer : m_observers) {
-        observer();
+    std::forward_list<Observer*> observers;
+
+    for (Observer &observer : m_observers)
+        observers.emplace_front(&observer);
+
+    for (Observer *observer : observers) {
+        if (m_observersSet.find(observer) != m_observersSet.end()) {
+            (*observer)();
+        }
     }
 }
 }
