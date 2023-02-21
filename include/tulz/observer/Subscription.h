@@ -10,6 +10,8 @@ class Subscription {
     friend class Subject;
 
 public:
+    Subscription() = default;
+
     Subscription(const Subscription&) = delete;
     Subscription& operator=(const Subscription&) = delete;
 
