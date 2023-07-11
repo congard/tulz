@@ -27,8 +27,8 @@ set(TULZ_SOURCES
         src/test/Test.cpp include/tulz/test/Test.h
         include/tulz/test/TestDetails.h
         include/tulz/observer/Observer.h
-        src/observer/Subject.cpp include/tulz/observer/Subject.h
-        src/observer/Subscription.cpp include/tulz/observer/Subscription.h
+        include/tulz/observer/Subject.h
+        include/tulz/observer/Subscription.h
         include/tulz/observer/Observable.h
         include/tulz/observer/ObservableNumber.h)
 

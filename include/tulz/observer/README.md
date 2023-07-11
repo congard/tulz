@@ -34,12 +34,31 @@ subscription2
 subscription1
 ```
 
+<br>
+
+```cpp
+Subject<float> subject;
+subject.subscribe([](float val) {
+    cout << "value: " << val << "\n";
+});
+
+subject.notify(3.14f);
+subject.notify(6.28f);
+```
+
+Output:
+
+```
+value: 3.14
+value: 6.28
+```
+
 ### Observable
 
 ```c++
 ObservableInt val {0};
-val.subscribe([&]() {
-    cout << "Value changed: " << *val << "\n";
+val.subscribe([](int val) {
+    std::cout << "Value changed: " << val << "\n";
 });
 
 val = 5;

@@ -5,7 +5,7 @@
 
 namespace tulz {
 template<typename T>
-class Observable: public Subject {
+class Observable: public Subject<T&> {
 public:
     using type = T;
 
@@ -23,7 +23,7 @@ public:
 
     Observable& operator=(T &&val) {
         m_val = val;
-        notify();
+        this->notify(get());
         return *this;
     }
 

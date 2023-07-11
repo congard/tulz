@@ -15,20 +15,20 @@ public:
     T operator++(int) {
         auto prev = this->m_val;
         ++this->m_val;
-        this->notify();
+        this->notify(this->get());
         return prev;
     }
 
     // prefix increment
     T operator++() {
         ++this->m_val;
-        this->notify();
+        this->notify(this->get());
         return this->m_val;
     }
 
     ObservableNumber& operator+=(T other) {
         this->m_val += other;
-        this->notify();
+        this->notify(this->get());
         return *this;
     }
 
@@ -36,32 +36,32 @@ public:
     T operator--(int) {
         auto prev = this->m_val;
         --this->m_val;
-        this->notify();
+        this->notify(this->get());
         return prev;
     }
 
     // prefix decrement
     T operator--() {
         --this->m_val;
-        this->notify();
+        this->notify(this->get());
         return this->m_val;
     }
 
     ObservableNumber& operator-=(T other) {
         this->m_val -= other;
-        this->notify();
+        this->notify(this->get());
         return *this;
     }
 
     ObservableNumber& operator*=(T other) {
         this->m_val *= other;
-        this->notify();
+        this->notify(this->get());
         return *this;
     }
 
     ObservableNumber& operator/=(T other) {
         this->m_val /= other;
-        this->notify();
+        this->notify(this->get());
         return *this;
     }
 };

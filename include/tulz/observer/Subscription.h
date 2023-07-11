@@ -4,10 +4,15 @@
 #include "Observer.h"
 
 namespace tulz {
+template<typename ...Args>
 class Subject;
 
+template<typename ...Args>
 class Subscription {
-    friend class Subject;
+    friend class Subject<Args...>;
+
+    using Subject_t = Subject<Args...>;
+    using Observer_t = Observer<Args...>;
 
 public:
     Subscription() = default;
@@ -15,21 +20,39 @@ public:
     Subscription(const Subscription&) = delete;
     Subscription& operator=(const Subscription&) = delete;
 
-    Subscription(Subscription&&) noexcept;
-    Subscription& operator=(Subscription&&) noexcept;
+    Subscription(Subscription &&rhs) noexcept {
+        *this = std::move(rhs);
+    }
 
-    void unsubscribe();
+    Subscription& operator=(Subscription &&rhs) noexcept {
+        if (&rhs == this)
+            return *this;
 
-    Subject* getSubject() const;
+        std::swap(m_subject, rhs.m_subject);
+        std::swap(m_observer, rhs.m_observer);
 
-    bool isValid() const;
+        return *this;
+    }
+
+    void unsubscribe() {
+        m_subject->unsubscribe(*this);
+    }
+
+    Subject_t* getSubject() const {
+        return m_subject;
+    }
+
+    bool isValid() const {
+        return m_subject != nullptr && m_observer != nullptr;
+    }
 
 private:
-    Subscription(Subject *subject, Observer *observer);
+    Subscription(Subject_t *subject, Observer_t *observer)
+        : m_subject(subject), m_observer(observer) {}
 
 private:
-    Subject *m_subject {nullptr};
-    Observer *m_observer {nullptr};
+    Subject_t *m_subject {nullptr};
+    Observer_t *m_observer {nullptr};
 };
 }
 

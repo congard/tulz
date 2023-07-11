@@ -4,7 +4,8 @@
 #include <functional>
 
 namespace tulz {
-using Observer = std::function<void()>;
+template<typename ...Args>
+using Observer = std::function<void(Args...)>;
 }
 
 #endif //TULZ_OBSERVER_H
