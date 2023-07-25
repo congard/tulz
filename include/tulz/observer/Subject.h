@@ -9,10 +9,10 @@
 #include "Subscription.h"
 
 namespace tulz {
-template<typename ...Args>
+template<typename ...Args_>
 class Subject {
-    using Subscription_t = Subscription<Args...>;
-    using Observer_t = Observer<Args...>;
+    using Subscription_t = Subscription<Args_...>;
+    using Observer_t = Observer<Args_...>;
 
 public:
     Subject() = default;
@@ -40,6 +40,7 @@ public:
         subscription.m_observer = nullptr;
     }
 
+    template<typename ...Args>
     void notify(Args&&... args) {
         std::forward_list<Observer_t*> observers;
 
