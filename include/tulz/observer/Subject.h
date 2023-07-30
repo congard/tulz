@@ -11,6 +11,7 @@
 namespace tulz {
 template<typename ...Args_>
 class Subject {
+public:
     using Subscription_t = Subscription<Args_...>;
     using Observer_t = Observer<Args_...>;
 
