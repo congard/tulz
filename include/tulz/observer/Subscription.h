@@ -38,6 +38,18 @@ public:
         m_subject->unsubscribe(*this);
     }
 
+    void mute() {
+        m_observer->mute();
+    }
+
+    void unmute() {
+        m_observer->unmute();
+    }
+
+    void isMuted() const {
+        return m_observer->isMuted();
+    }
+
     Subject_t* getSubject() const {
         return m_subject;
     }
