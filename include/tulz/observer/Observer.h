@@ -5,10 +5,10 @@
 #include <algorithm>
 
 namespace tulz {
-template<typename ...Args>
+template<typename ...Args_>
 class Observer {
 public:
-    using Func = std::function<void(Args...)>;
+    using Func = std::function<void(Args_...)>;
 
     struct Params {
         bool mute {false};
@@ -50,6 +50,7 @@ public:
         return *this;
     }
 
+    template<typename ...Args>
     void operator()(Args&&... args) {
         if (!isMuted()) {
             m_func(std::forward<Args>(args)...);
