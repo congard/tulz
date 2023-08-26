@@ -31,7 +31,8 @@ set(TULZ_SOURCES
         include/tulz/observer/Subscription.h
         include/tulz/observer/Observable.h
         include/tulz/observer/ObservableNumber.h
-        include/tulz/static_initializer.h)
+        include/tulz/static_initializer.h
+        include/tulz/observer/USubscription.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
