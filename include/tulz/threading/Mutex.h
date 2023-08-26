@@ -7,7 +7,7 @@ namespace tulz {
 class Mutex {
 public:
     void lock();
-    void tryLock();
+    bool tryLock();
     void unlock();
 
     std::mutex& std_mutex();

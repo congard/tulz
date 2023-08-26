@@ -5,8 +5,8 @@ void Mutex::lock() {
     m_mutex.lock();
 }
 
-void Mutex::tryLock() {
-    m_mutex.try_lock();
+bool Mutex::tryLock() {
+    return m_mutex.try_lock();
 }
 
 void Mutex::unlock() {
