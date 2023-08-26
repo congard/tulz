@@ -46,7 +46,7 @@ public:
         m_observer->unmute();
     }
 
-    void isMuted() const {
+    bool isMuted() const {
         return m_observer->isMuted();
     }
 
