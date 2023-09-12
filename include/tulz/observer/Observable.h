@@ -17,7 +17,9 @@ public:
 
     Observable(const Observable&) = delete;
 
-    Observable(Observable &&rhs) noexcept {
+    Observable(Observable &&rhs) noexcept
+        : Subject<T&>(std::move(rhs))
+    {
         std::swap(m_val, rhs.m_val);
     }
 
@@ -30,6 +32,7 @@ public:
     Observable& operator=(const Observable&) = delete;
 
     Observable& operator=(Observable &&rhs) noexcept {
+        Subject<T&>::operator=(std::move(rhs));
         std::swap(m_val, rhs.m_val);
         return *this;
     }
