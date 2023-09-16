@@ -19,7 +19,7 @@ private:
     public:
         using iterator_category = std::random_access_iterator_tag;
         using value_type = Type;
-        using difference_type = ssize_t;
+        using difference_type = std::ptrdiff_t;
         using pointer = Type*;
         using reference = Type&;
 
@@ -52,29 +52,29 @@ private:
             return it;
         }
 
-        __iterator& operator+=(ssize_t i) {
+        __iterator& operator+=(difference_type i) {
             m_index += i;
             return *this;
         }
 
-        __iterator& operator-=(ssize_t i) {
+        __iterator& operator-=(difference_type i) {
             m_index -= i;
             return *this;
         }
 
-        __iterator operator+(ssize_t i) {
+        __iterator operator+(difference_type i) {
             __iterator it = *this;
             it += i;
             return it;
         }
 
-        __iterator operator-(ssize_t i) {
+        __iterator operator-(difference_type i) {
             __iterator it = *this;
             it -= i;
             return it;
         }
 
-        ssize_t operator-(__iterator other) {
+        difference_type operator-(__iterator other) {
             return m_index - other.m_index;
         }
 
