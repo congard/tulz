@@ -1,6 +1,6 @@
 #include <tulz/DynamicLibrary.h>
 
-#ifdef WIN32
+#ifdef _WIN32
     #include <Windows.h>
 
     inline auto loadLibrary(const char *path) {
@@ -59,7 +59,7 @@ DynamicLibrary::Error DynamicLibrary::getError() {
     Error error;
     error.error = false;
 
-#ifdef WIN32
+#ifdef _WIN32
     auto lastError = GetLastError();
 
     if (lastError != 0) {
