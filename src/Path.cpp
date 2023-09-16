@@ -214,8 +214,7 @@ Path Path::getSystemPath() {
 #if defined(__linux__)
     return "/"_p;
 #elif defined(_WIN32)
-    char separator[] = {SystemSeparator, '\0'};
-    return Path(strcat(getenv("SystemDrive"), separator));
+    return Path(std::string {getenv("SystemDrive")} + SystemSeparator);
 #endif
 }
 
