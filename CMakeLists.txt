@@ -32,7 +32,9 @@ set(TULZ_SOURCES
         include/tulz/observer/Observable.h
         include/tulz/observer/ObservableNumber.h
         include/tulz/static_initializer.h
-        include/tulz/observer/USubscription.h)
+        include/tulz/observer/USubscription.h
+        include/tulz/demangler.h
+        src/demangler.cpp)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
