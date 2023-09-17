@@ -1,6 +1,7 @@
 # Tulz
 
-Tulz is cross-platform C++17 tools library for C++ development
+Tulz is cross-platform C++17 tools library for C++ development.
+It contains reusable classes that I use in my projects. 
 
 ## Compilers support
 
@@ -8,9 +9,8 @@ Tested under:
 
 | Linux | Windows              | Android          |
 |-------|----------------------|------------------|
-| GCC   | MSVC 19.26.28806 x64 | NDK 22.0.7026061 |
-| CLang | GCC 8.1.0, MinGW-w64 |                  |
-|       | CLang 10.0.0         |                  |
+| GCC   | MSVC 19.37.32824 x64 | NDK 22.0.7026061 |
+| Clang | Clang 16.0.0         |                  |
 
 ## Installation
 
@@ -21,10 +21,16 @@ Tested under:
 ## Components
 
 1. [observer](include/tulz/observer)
-2. [test](include/tulz/test)
+2. [test](include/tulz/test) **\[Deprecated\]**
 3. [threading](include/tulz/threading)
 4. io
 5. dll
+
+## Flags
+
+| Flag                                   | Description                              | Mandatory | Default | Platform |
+|----------------------------------------|------------------------------------------|-----------|---------|----------|
+| `TULZ_DEMANGLER_DISABLE_THREAD_SAFETY` | Controls `tulz::demangler` thread safety | No        | OFF     | Windows  |
 
 ## Examples
 
