@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace tulz {
-namespace StringUtils {
+namespace tulz::StringUtils {
 class Matches {
 public:
     size_t pos, size;
@@ -55,8 +54,14 @@ std::string replaceAll(const std::string &src, const std::string &target, const 
  * @return
  */
 std::vector<Matches> findRegex(const std::string &src, const std::string &regex, bool ignoreEmptyMatches = true);
-}
-}
 
+/**
+ * Checks if the specified string `str` starts with the prefix `prefix`.
+ * @param str The string to check.
+ * @param prefix The prefix to compare with.
+ * @return `true` if `str` starts with `prefix`, `false` otherwise.
+ */
+bool startsWith(std::string_view str, std::string_view prefix);
+}
 
 #endif //TULZ_STRINGUTILS_H
