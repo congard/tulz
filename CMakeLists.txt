@@ -3,7 +3,10 @@ project(tulz)
 
 set(CMAKE_CXX_STANDARD 17)
 
-if (MSVC)
+# TODO: use dllexport/dllimport instead
+# https://learn.microsoft.com/en-us/cpp/cpp/dllexport-dllimport
+# https://learn.microsoft.com/en-us/cpp/cpp/using-dllimport-and-dllexport-in-cpp-classes
+if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
 endif()
 
