@@ -2,14 +2,12 @@
 
 namespace tulz {
 void Thread::start(Runnable *runnable) {
-    // we need to pass runnable as lambda argument
-    // because otherwise we can get SIGBUS
-    m_thread = std::thread([&](auto p) {
-        p->run();
-        delete p;
+    m_thread = std::thread([this, runnable] {
+        runnable->run();
+        delete runnable;
 
         m_isFinished = true;
-    }, runnable);
+    });
 }
 
 void Thread::join() {

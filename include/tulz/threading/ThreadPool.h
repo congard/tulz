@@ -2,10 +2,10 @@
 #define SPACE_EXPLORER_THREADPOOL_H
 
 #include <condition_variable>
+#include <mutex>
 #include <type_traits>
 #include <list>
 
-#include "Mutex.h"
 #include "Runnable.h"
 
 namespace tulz {
@@ -18,7 +18,8 @@ public:
     ThreadPool();
 
     template<typename T, typename ...Args>
-    typename std::enable_if_t<!Runnable::isRunnable<T>::value, void> start(T ptr, Args&&... args) {
+    std::enable_if_t<!Runnable::isRunnable<T>::value, void>
+    start(T ptr, Args&&... args) {
         start(new TRunnable<T, Args...>(ptr, std::forward<Args>(args)...));
     }
 
@@ -48,8 +49,8 @@ private:
     bool m_isRunning;
 
 private:
-    Mutex m_poolMutex;
-    Mutex m_queueMutex;
+    std::mutex m_poolMutex;
+    std::mutex m_queueMutex;
 
 private:
     template<typename T, typename ...Args>

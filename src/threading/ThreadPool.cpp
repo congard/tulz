@@ -1,32 +1,29 @@
 #include <tulz/threading/ThreadPool.h>
-
 #include <tulz/threading/Thread.h>
-#include <tulz/threading/Runnable.h>
-#include <tulz/threading/MutexLocker.h>
 
 #include <chrono>
 
-using namespace std;
-
 namespace tulz {
-inline auto time() {
-    using namespace chrono;
-
+inline static auto time() {
+    using namespace std::chrono;
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 
 class PooledThread: public Thread {
 public:
-    void setLastActiveTime(long time) {
+    PooledThread()
+        : m_lastActiveTime(time()) {}
+
+    void setLastActiveTime(int64_t time) {
         m_lastActiveTime = time;
     }
 
-    long getLastActiveTime() const {
+    auto getLastActiveTime() const {
         return m_lastActiveTime;
     }
 
 private:
-    long m_lastActiveTime = 0;
+    int64_t m_lastActiveTime;
 };
 
 class PooledRunnable: public Runnable {
@@ -35,49 +32,51 @@ public:
         : m_threadPool(pool),
           m_pooledThread(pooledThread) {}
 
-    void run() override {
-        while (true) {
-            Runnable *runnable;
-
-            {
-                MutexLocker locker(m_threadPool->m_queueMutex);
-
-                auto &queue = m_threadPool->m_queue;
-
-                bool isExpired;
-
-                m_threadPool->m_condition.wait(locker.std_locker(), [&]() {
-                    auto passedTime = time() - m_pooledThread->getLastActiveTime();
-                    auto expiryTimeout = m_threadPool->getExpiryTimeout();
-                    isExpired = (expiryTimeout >= 0) && (passedTime > expiryTimeout);
-
-                    return !queue.empty() || !m_threadPool->isRunning() || isExpired;
-                });
-
-                if (!m_threadPool->isRunning()) {
-                    return;
-                }
-
-                if (queue.empty() && isExpired) {
-                    return;
-                }
-
-                runnable = queue.front();
-                queue.remove(runnable);
-            }
-
-            runnable->run();
-
-            m_pooledThread->setLastActiveTime(time());
-
-            delete runnable;
-        }
-    }
+    void run() override;
 
 private:
     ThreadPool *m_threadPool;
     PooledThread *m_pooledThread;
 };
+
+void PooledRunnable::run() {
+    while (true) {
+        Runnable *runnable;
+
+        {
+            std::unique_lock locker(m_threadPool->m_queueMutex);
+
+            auto &queue = m_threadPool->m_queue;
+
+            bool isExpired;
+
+            m_threadPool->m_condition.wait(locker, [&]() {
+                auto passedTime = time() - m_pooledThread->getLastActiveTime();
+                auto expiryTimeout = m_threadPool->getExpiryTimeout();
+
+                isExpired = (expiryTimeout >= 0) && (passedTime > expiryTimeout);
+
+                return !queue.empty() || !m_threadPool->isRunning() || isExpired;
+            });
+
+            if (!m_threadPool->isRunning())
+                return;
+
+            if (queue.empty() && isExpired)
+                return;
+
+            auto qFront = queue.begin();
+            runnable = *qFront;
+            queue.erase(qFront);
+        }
+
+        runnable->run();
+
+        m_pooledThread->setLastActiveTime(time());
+
+        delete runnable;
+    }
+}
 
 ThreadPool::ThreadPool()
     : m_maxThreadCount(4),
@@ -90,12 +89,12 @@ void ThreadPool::start(Runnable *runnable) {
     }
 
     {
-        MutexLocker locker(m_queueMutex);
+        std::scoped_lock locker(m_queueMutex);
         m_queue.emplace_back(runnable);
     }
 
     {
-        MutexLocker locker(m_poolMutex);
+        std::scoped_lock locker(m_poolMutex);
 
         if ((m_maxThreadCount > m_pool.size() || m_maxThreadCount < 0) && getActiveThreadCount() == getThreadCount())
         {
@@ -109,7 +108,7 @@ void ThreadPool::start(Runnable *runnable) {
 }
 
 void ThreadPool::clear() {
-    MutexLocker locker(m_queueMutex);
+    std::scoped_lock locker(m_queueMutex);
 
     for (auto runnable : m_queue) {
         delete runnable;
@@ -123,7 +122,7 @@ void ThreadPool::stop() {
     m_condition.notify_all();
 
     {
-        MutexLocker locker(m_poolMutex);
+        std::scoped_lock locker(m_poolMutex);
 
         for (auto thread : m_pool) {
             thread->join();
@@ -144,7 +143,7 @@ void ThreadPool::update() {
     m_condition.notify_all();
 
     {
-        MutexLocker locker(m_poolMutex);
+        std::scoped_lock locker(m_poolMutex);
 
         auto it = m_pool.begin();
 

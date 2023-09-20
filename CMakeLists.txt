@@ -21,8 +21,6 @@ set(TULZ_SOURCES
         include/tulz/Exception.h src/Exception.cpp
         include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp
         include/tulz/DynamicLibrary.h src/DynamicLibrary.cpp
-        include/tulz/threading/Mutex.h src/threading/Mutex.cpp
-        include/tulz/threading/MutexLocker.h src/threading/MutexLocker.cpp
         include/tulz/threading/Runnable.h src/threading/Runnable.cpp
         include/tulz/threading/Thread.h src/threading/Thread.cpp
         include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp
