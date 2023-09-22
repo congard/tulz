@@ -25,8 +25,6 @@ set(TULZ_SOURCES
         include/tulz/threading/Thread.h src/threading/Thread.cpp
         include/tulz/threading/ThreadPool.h src/threading/ThreadPool.cpp
         src/LocaleInfo.cpp include/tulz/LocaleInfo.h
-        src/test/Test.cpp include/tulz/test/Test.h
-        include/tulz/test/TestDetails.h
         include/tulz/observer/Observer.h
         include/tulz/observer/Subject.h
         include/tulz/observer/Subscription.h
