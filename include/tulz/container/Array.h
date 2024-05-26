@@ -123,7 +123,7 @@ public:
 
     Array(T *array, size_t size, bool copy = true) {
         if (copy) {
-            if (!std::is_class<T>::value) { // C++17: if constexpr(!std::is_class_v<T>)
+            if constexpr (!std::is_class_v<T>) {
                 m_array = static_cast<T *>(malloc(size * sizeof(T)));
                 memcpy(m_array, array, size * sizeof(T));
             } else {
@@ -133,7 +133,7 @@ public:
                     new (&m_array[i]) T(array[i]);
                 }
             }
-        } else { // Warning: dangerous since we don't know how array was created
+        } else { // Warning: dangerous since we don't know how the array was created
             m_array = array;
         }
 
@@ -173,7 +173,7 @@ public:
         m_size = src.m_size;
         m_array = static_cast<T*>(malloc(m_size * sizeof(T)));
 
-        if (!std::is_class<T>::value) {
+        if constexpr (!std::is_class_v<T>) {
             memcpy(m_array, src.m_array, m_size * sizeof(T));
         } else {
             for (size_t i = 0; i < m_size; i++) {
@@ -289,7 +289,7 @@ public:
 
 private:
     void initialize(size_t begin, size_t end) {
-        if (!std::is_class<T>::value)
+        if constexpr (!std::is_class_v<T>)
             return;
 
         for (size_t i = begin; i < end; ++i) {
@@ -298,7 +298,7 @@ private:
     }
 
     void destroy(size_t begin, size_t end) {
-        if (!std::is_class<T>::value)
+        if constexpr (!std::is_class_v<T>)
             return;
 
         for (size_t i = begin; i < end; ++i) {
