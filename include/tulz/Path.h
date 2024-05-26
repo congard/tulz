@@ -1,8 +1,6 @@
 #ifndef TULZ_PATH_H
 #define TULZ_PATH_H
 
-#include <tulz/Array.h>
-
 #include <string>
 #include <forward_list>
 

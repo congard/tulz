@@ -2,6 +2,7 @@
 #define TULZ_FILE_H
 
 #include <tulz/Path.h>
+#include <tulz/container/Array.h>
 
 namespace tulz {
 

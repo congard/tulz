@@ -1,4 +1,4 @@
-#include <tulz/Array.h>
+#include "tulz/container/Array.h"
 #include <gtest/gtest.h>
 
 TEST(ArrayTest, InitializerList) {

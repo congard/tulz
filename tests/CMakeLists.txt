@@ -36,5 +36,5 @@ function(add_gtest name src)
     add_test(NAME ${name} COMMAND ${name})
 endfunction()
 
-add_gtest(ArrayTest tulz/ArrayTest.cpp)
+add_gtest(ArrayTest tulz/container/ArrayTest.cpp)
 add_gtest(DemanglerTest tulz/demangler_test.cpp)
