@@ -1,6 +1,6 @@
 # Tulz
 
-Tulz is cross-platform C++17 tools library for C++ development.
+Tulz is a light-weight cross-platform C++17 tools library for C++ development.
 It contains reusable classes that I use in my projects. 
 
 ## Compilers support
@@ -20,10 +20,11 @@ Tested under:
 
 ## Components
 
-1. [observer](include/tulz/observer)
-2. [threading](include/tulz/threading)
-3. io
-4. dll
+1. [container](include/tulz/container)
+2. [observer](include/tulz/observer)
+3. [threading](include/tulz/threading)
+4. io
+5. dll
 
 ## Flags
 
