@@ -4,8 +4,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 namespace tulz {
 File::File(const Path &path, Mode mode)
     : File()
@@ -13,7 +11,7 @@ File::File(const Path &path, Mode mode)
     open(path, mode);
 }
 
-File::File(const string &path, Mode mode)
+File::File(const std::string &path, Mode mode)
     : File(Path(path), mode) {}
 
 File::File()
@@ -41,8 +39,8 @@ void File::open(const Path &path, Mode mode) {
             case Mode::Write: return "wb";
             case Mode::AppendText: return "a";
             case Mode::Append: return "ab";
-            case Mode::None: throw invalid_argument("Invalid mode value: None");
-            default: throw invalid_argument("Invalid mode value");
+            case Mode::None: throw std::invalid_argument("Invalid mode value: None");
+            default: throw std::invalid_argument("Invalid mode value");
         }
     };
 
@@ -63,7 +61,7 @@ void File::open(const Path &path, Mode mode) {
 
 void File::close() {
     if (!isOpen())
-        cerr << "Can't close file: file not opened";
+        std::cerr << "Can't close file: file not opened";
     else {
         fclose(m_file);
         m_file = nullptr;
@@ -82,7 +80,7 @@ size_t File::write(const Array<byte> &data) {
     return write(data.array(), data.size());
 }
 
-size_t File::write(const string &str) {
+size_t File::write(const std::string &str) {
     return write(str.c_str(), str.length());
 }
 
@@ -124,9 +122,9 @@ Array<byte> File::read() {
     return result;
 }
 
-string File::readStr() {
+std::string File::readStr() {
     auto data = read();
-    return string(reinterpret_cast<char const *>(data.array()), data.size());
+    return {reinterpret_cast<char const *>(data.array()), data.size()};
 }
 
 int File::seek(long offset, Origin origin) {
