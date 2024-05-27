@@ -35,7 +35,9 @@ set(TULZ_SOURCES
         include/tulz/demangler.h
         src/demangler.cpp
         include/tulz/container/RingBuffer.h
-        include/tulz/container/RandomAccessIndexIterator.h)
+        include/tulz/container/RandomAccessIndexIterator.h
+        include/tulz/util/noncopyable.h
+        include/tulz/util/nonmovable.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
