@@ -16,7 +16,7 @@ set(TULZ_SOURCES
         include/tulz/Path.h src/Path.cpp
         include/tulz/container/Array.h
         include/tulz/StringUtils.h src/StringUtils.cpp
-        include/tulz/macros.h
+        include/tulz/util/macros.h
         include/tulz/File.h src/File.cpp
         include/tulz/Exception.h src/Exception.cpp
         include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp
@@ -30,7 +30,7 @@ set(TULZ_SOURCES
         include/tulz/observer/Subscription.h
         include/tulz/observer/Observable.h
         include/tulz/observer/ObservableNumber.h
-        include/tulz/static_initializer.h
+        include/tulz/util/static_initializer.h
         include/tulz/observer/USubscription.h
         include/tulz/demangler.h
         src/demangler.cpp
