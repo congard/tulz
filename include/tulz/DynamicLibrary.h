@@ -24,10 +24,15 @@ public:
 
     void* getAddress(std::string_view name);
 
-    template<typename T>
-    T getAddress(const std::string &name) {
-        return reinterpret_cast<T>(getAddress(name));
+    /**
+     * Returns function pointer casted to `F*`.
+     * @tparam F The function signature, e.g. `void()`.
+     * @param name The function name.
+     * @return The function pointer if it was found, `nullptr` otherwise.
+     */
+    template<typename F>
     auto getAddress(std::string_view name) {
+        return reinterpret_cast<F*>(getAddress(name));
     }
 
     static Error getError();
