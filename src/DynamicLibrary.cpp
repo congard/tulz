@@ -18,12 +18,10 @@
     #define getAddr(lib, name) dlsym(lib, name)
 #endif
 
-using namespace std;
-
 namespace tulz {
 DynamicLibrary::DynamicLibrary() = default;
 
-DynamicLibrary::DynamicLibrary(const string &path) {
+DynamicLibrary::DynamicLibrary(std::string_view path) {
     load(path);
 }
 
@@ -31,12 +29,12 @@ DynamicLibrary::~DynamicLibrary() {
     close();
 }
 
-void DynamicLibrary::load(const string &path) {
+void DynamicLibrary::load(std::string_view path) {
     if (isLoaded()) {
         close();
     }
 
-    m_lib = loadLibrary(path.c_str());
+    m_lib = loadLibrary(path.data());
 }
 
 void DynamicLibrary::close() {
@@ -51,8 +49,8 @@ bool DynamicLibrary::isLoaded() const {
     return m_lib != nullptr;
 }
 
-void* DynamicLibrary::getAddress(const std::string &name) {
-    return getAddr(m_lib, name.c_str());
+void* DynamicLibrary::getAddress(std::string_view name) {
+    return getAddr(m_lib, name.data());
 }
 
 DynamicLibrary::Error DynamicLibrary::getError() {
@@ -64,7 +62,7 @@ DynamicLibrary::Error DynamicLibrary::getError() {
 
     if (lastError != 0) {
         error.error = true;
-        error.message = to_string(lastError);
+        error.message = std::to_string(lastError);
     }
 
     SetLastError(0);

@@ -2,6 +2,7 @@
 #define TULZ_DYNAMICLIBRARY_H
 
 #include <string>
+#include <string_view>
 
 namespace tulz {
 class DynamicLibrary {
@@ -13,19 +14,20 @@ public:
 
 public:
     DynamicLibrary();
-    explicit DynamicLibrary(const std::string &path);
+    explicit DynamicLibrary(std::string_view path);
     ~DynamicLibrary();
 
-    void load(const std::string &path);
+    void load(std::string_view path);
     void close();
 
     bool isLoaded() const;
 
-    void* getAddress(const std::string &name);
+    void* getAddress(std::string_view name);
 
     template<typename T>
     T getAddress(const std::string &name) {
         return reinterpret_cast<T>(getAddress(name));
+    auto getAddress(std::string_view name) {
     }
 
     static Error getError();
