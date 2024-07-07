@@ -10,6 +10,10 @@ public:
     struct Error {
         bool error;
         std::string message;
+
+        inline operator bool() const {
+            return error;
+        }
     };
 
 public:
