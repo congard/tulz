@@ -15,13 +15,35 @@ class SubjectRouter {
     using DefaultSubject_t = Subject_t<>;
 
 public:
-    explicit SubjectRouter();
+    SubjectRouter();
 
+    /**
+     * Notifies observers using the routing key.
+     * @tparam Args The types of arguments to pass.
+     * @note The destination observers must accept the
+     * arguments of the specified types. Otherwise the
+     * behaviour is undefined.
+     * @param key The routing key. Can contain regex.
+     * @param args The arguments to pass.
+     * @return The number of observers notified.
+     */
     template<typename ...Args>
     size_t notify(const RoutingKey &key, Args&&... args) {
         return m_rootNode.notify(key, std::forward<Args>(args)...);
     }
 
+    /**
+     * Subscribes using the routing key. If the corresponding
+     * subject does not exist, creates a new one.
+     * @tparam Args The types of observer arguments.
+     * @note The destination subject must accept the
+     * arguments of the specified types. Otherwise the
+     * behaviour is undefined.
+     * @tparam C The type of callable.
+     * @param key The routing key. Cannot contain regex.
+     * @param callable The callable (callback) to subscribe.
+     * @return The subscription.
+     */
     template<typename ...Args, typename C>
     Subscription<Args...> subscribe(const RoutingKey &key, C &&callable) {
         if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<C>>, Observer<Args...>>) {
