@@ -37,7 +37,16 @@ set(TULZ_SOURCES
         include/tulz/container/RingBuffer.h
         include/tulz/container/RandomAccessIndexIterator.h
         include/tulz/util/noncopyable.h
-        include/tulz/util/nonmovable.h)
+        include/tulz/util/nonmovable.h
+        src/observer/routing/RoutingKey.cpp
+        include/tulz/observer/routing/RoutingKey.h
+        src/observer/routing/RoutingLevelView.cpp
+        include/tulz/observer/routing/RoutingLevelView.h
+        src/observer/routing/RoutingKeyBuilder.cpp
+        include/tulz/observer/routing/RoutingKeyBuilder.h
+        include/tulz/observer/routing/RoutingKeyLevel.h
+        src/observer/routing/SubjectRouter.cpp
+        include/tulz/observer/routing/SubjectRouter.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES

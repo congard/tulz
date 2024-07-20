@@ -39,4 +39,9 @@ endfunction()
 add_gtest(ArrayTest tulz/container/ArrayTest.cpp)
 add_gtest(RingBufferTest tulz/container/RingBufferTest.cpp)
 add_gtest(RingBufferEfficiencyTest tulz/container/RingBufferEfficiencyTest.cpp)
+
 add_gtest(DemanglerTest tulz/demangler_test.cpp)
+
+add_gtest(RoutingKeyBuilderTest tulz/observer/routing/RoutingKeyBuilderTest.cpp)
+add_gtest(RoutingLevelViewTest tulz/observer/routing/RoutingLevelViewTest.cpp)
+add_gtest(SubjectRouterTest tulz/observer/routing/SubjectRouterTest.cpp)

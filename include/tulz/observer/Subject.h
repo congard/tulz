@@ -55,6 +55,10 @@ public:
         }
     }
 
+    bool hasSubscriptions() const {
+        return !m_observers.empty();
+    }
+
 private:
     std::forward_list<Observer_t> m_observers;
     std::set<Observer_t*> m_observersSet;

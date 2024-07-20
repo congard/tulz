@@ -35,7 +35,7 @@ public:
     }
 
     Observer& operator=(const Observer &that) {
-        if (this == *that)
+        if (this == &that)
             return *this;
         m_func = that.m_func;
         m_params = that.m_params;
@@ -43,7 +43,7 @@ public:
     }
 
     Observer& operator=(Observer &&that) noexcept {
-        if (this == *that)
+        if (this == &that)
             return *this;
         std::swap(m_func, that.m_func);
         std::swap(m_params, that.m_params);
