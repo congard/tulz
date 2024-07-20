@@ -1,12 +1,12 @@
-#ifndef SPACE_EXPLORER_THREAD_H
-#define SPACE_EXPLORER_THREAD_H
+#ifndef TULZ_THREAD_H
+#define TULZ_THREAD_H
 
 #include <thread>
 
 #include "Runnable.h"
 
 namespace tulz {
-class Thread {
+class TULZ_API Thread {
 public:
     Thread() = default;
 
@@ -46,4 +46,4 @@ private:
 };
 }
 
-#endif //SPACE_EXPLORER_THREAD_H
+#endif //TULZ_THREAD_H

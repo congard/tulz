@@ -11,7 +11,7 @@
 namespace tulz {
 class Thread;
 
-class ThreadPool {
+class TULZ_API ThreadPool {
     friend class PooledRunnable;
 
 public:

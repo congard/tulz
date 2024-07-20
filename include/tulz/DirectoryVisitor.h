@@ -4,7 +4,7 @@
 #include <tulz/Path.h>
 
 namespace tulz {
-class DirectoryVisitor {
+class TULZ_API DirectoryVisitor {
 public:
     explicit DirectoryVisitor(const Path &dir);
     DirectoryVisitor();

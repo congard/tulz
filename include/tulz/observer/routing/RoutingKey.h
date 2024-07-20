@@ -9,9 +9,8 @@
 namespace tulz {
 /**
  * Represents routing key.
- * TODO
  */
-class RoutingKey {
+class TULZ_API RoutingKey {
     friend class RoutingKeyBuilder;
 
 public:

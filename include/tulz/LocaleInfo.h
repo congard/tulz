@@ -1,6 +1,8 @@
 #ifndef TULZ_LOCALEINFO_H
 #define TULZ_LOCALEINFO_H
 
+#include <tulz/export.h>
+
 #include <list>
 
 namespace tulz {
@@ -13,7 +15,7 @@ namespace tulz {
  * Also you can obtain info such as the country name and
  * the list of languages with the same ISO code you specified
  */
-class LocaleInfo {
+class TULZ_API LocaleInfo {
 public:
     struct _info {
         const char *value;

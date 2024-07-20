@@ -1,11 +1,13 @@
 #ifndef TULZ_DYNAMICLIBRARY_H
 #define TULZ_DYNAMICLIBRARY_H
 
+#include <tulz/export.h>
+
 #include <string>
 #include <string_view>
 
 namespace tulz {
-class DynamicLibrary {
+class TULZ_API DynamicLibrary {
 public:
     struct Error {
         bool error;

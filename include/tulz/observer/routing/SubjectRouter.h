@@ -8,7 +8,7 @@
 #include <map>
 
 namespace tulz {
-class SubjectRouter {
+class TULZ_API SubjectRouter {
     template<typename ...Args>
     using Subject_t = Subject<Args...>;
 
@@ -79,7 +79,7 @@ public:
     size_t depth() const;
 
 private:
-    class Node {
+    class TULZ_API Node {
     public:
         explicit Node(std::string name);
 

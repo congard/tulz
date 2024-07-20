@@ -1,10 +1,12 @@
-#ifndef SPACE_EXPLORER_RUNNABLE_H
-#define SPACE_EXPLORER_RUNNABLE_H
+#ifndef TULZ_RUNNABLE_H
+#define TULZ_RUNNABLE_H
+
+#include <tulz/export.h>
 
 #include <type_traits>
 
 namespace tulz {
-class Runnable {
+class TULZ_API Runnable {
 public:
     virtual ~Runnable();
 
@@ -16,4 +18,4 @@ public:
 };
 }
 
-#endif //SPACE_EXPLORER_RUNNABLE_H
+#endif //TULZ_RUNNABLE_H

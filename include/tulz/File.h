@@ -9,7 +9,7 @@ namespace tulz {
 /**
  * C++ implementation of C FILE
  */
-class File {
+class TULZ_API File {
 public:
     enum class Mode {
         None,

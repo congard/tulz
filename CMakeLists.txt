@@ -3,13 +3,6 @@ project(tulz)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# TODO: use dllexport/dllimport instead
-# https://learn.microsoft.com/en-us/cpp/cpp/dllexport-dllimport
-# https://learn.microsoft.com/en-us/cpp/cpp/using-dllimport-and-dllexport-in-cpp-classes
-if (WIN32)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
-endif()
-
 include_directories(include)
 
 set(TULZ_SOURCES
@@ -46,7 +39,8 @@ set(TULZ_SOURCES
         include/tulz/observer/routing/RoutingKeyBuilder.h
         include/tulz/observer/routing/RoutingKeyLevel.h
         src/observer/routing/SubjectRouter.cpp
-        include/tulz/observer/routing/SubjectRouter.h)
+        include/tulz/observer/routing/SubjectRouter.h
+        include/tulz/export.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
@@ -60,6 +54,12 @@ endif()
 add_library(tulz
         ${TULZ_SOURCES}
         ${TULZ_ANDROID_SOURCES})
+
+# https://learn.microsoft.com/en-us/cpp/cpp/dllexport-dllimport
+# https://learn.microsoft.com/en-us/cpp/cpp/using-dllimport-and-dllexport-in-cpp-classes
+if (WIN32)
+    target_compile_definitions(tulz PUBLIC TULZ_BUILD_DLL)
+endif()
 
 if (UNIX AND NOT ANDROID)
     set(LINK_LIBRARIES ${LINK_LIBRARIES} pthread)

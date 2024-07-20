@@ -2,13 +2,14 @@
 #define TULZ_ROUTINGKEYVIEW_H
 
 #include <tulz/observer/routing/RoutingKeyLevel.h>
+#include <tulz/export.h>
 
 #include <string_view>
 
 namespace tulz {
 class RoutingKey;
 
-class RoutingLevelView {
+class TULZ_API RoutingLevelView {
 public:
     explicit RoutingLevelView(const RoutingKey &key, int level = 0);
 

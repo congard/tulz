@@ -5,7 +5,7 @@
 #include <tulz/util/noncopyable.h>
 
 namespace tulz {
-class RoutingKeyBuilder : noncopyable {
+class TULZ_API RoutingKeyBuilder : noncopyable {
 public:
     RoutingKeyBuilder();
 

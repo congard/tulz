@@ -1,6 +1,8 @@
 #ifndef TULZ_PATH_H
 #define TULZ_PATH_H
 
+#include <tulz/export.h>
+
 #include <string>
 #include <forward_list>
 
@@ -10,7 +12,7 @@ typedef unsigned char byte;
 /**
  * The class provides basic functions for working with Path
  */
-class Path {
+class TULZ_API Path {
 public:
     enum Error {
         NotFile,
