@@ -25,7 +25,7 @@ TEST(ResourceTest, SimulaneousReadBlockingWrite) {
         };
 
         Type type;
-        long timestamp;
+        uint64_t timestamp;
     };
 
     std::vector<Action> actions;
@@ -56,13 +56,19 @@ TEST(ResourceTest, SimulaneousReadBlockingWrite) {
 
     auto reader = [&](long millisSleep) {
         ReadLock lock {resource};
-        appendAction({.type = Action::Type::Read, .timestamp = currentTimeMillis()});
+        appendAction({
+            .type = Action::Type::Read,
+            .timestamp = static_cast<uint64_t>(currentTimeMillis())
+        });
         std::this_thread::sleep_for(std::chrono::milliseconds {millisSleep});
     };
 
     auto writer = [&](long millisSleep) {
         WriteLock lock {resource};
-        appendAction({.type = Action::Type::Write, .timestamp = currentTimeMillis()});
+        appendAction({
+            .type = Action::Type::Write,
+            .timestamp = static_cast<uint64_t>(currentTimeMillis())
+        });
         std::this_thread::sleep_for(std::chrono::milliseconds {millisSleep});
     };
 
