@@ -45,3 +45,5 @@ add_gtest(DemanglerTest tulz/demangler_test.cpp)
 add_gtest(RoutingKeyBuilderTest tulz/observer/routing/RoutingKeyBuilderTest.cpp)
 add_gtest(RoutingLevelViewTest tulz/observer/routing/RoutingLevelViewTest.cpp)
 add_gtest(SubjectRouterTest tulz/observer/routing/SubjectRouterTest.cpp)
+
+add_gtest(ResourceTest tulz/threading/rwp/ResourceTest.cpp)
