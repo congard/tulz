@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(tulz-tests)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
@@ -45,3 +45,5 @@ add_gtest(DemanglerTest tulz/demangler_test.cpp)
 add_gtest(RoutingKeyBuilderTest tulz/observer/routing/RoutingKeyBuilderTest.cpp)
 add_gtest(RoutingLevelViewTest tulz/observer/routing/RoutingLevelViewTest.cpp)
 add_gtest(SubjectRouterTest tulz/observer/routing/SubjectRouterTest.cpp)
+
+add_gtest(ResourceTest tulz/threading/rwp/ResourceTest.cpp)
