@@ -1,6 +1,8 @@
 #ifndef TULZ_RESOURCE_H
 #define TULZ_RESOURCE_H
 
+#include <tulz/export.h>
+
 #include <deque>
 #include <mutex>
 #include <condition_variable>
@@ -20,7 +22,7 @@ namespace tulz::rwp {
  * 3. if the queue is non-empty or the resource is busy,
  *    lock requests will be added to the queue.
  */
-class Resource {
+class TULZ_API Resource {
 public:
     Resource();
 
