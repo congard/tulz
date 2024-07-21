@@ -40,7 +40,11 @@ set(TULZ_SOURCES
         include/tulz/observer/routing/RoutingKeyLevel.h
         src/observer/routing/SubjectRouter.cpp
         include/tulz/observer/routing/SubjectRouter.h
-        include/tulz/export.h)
+        include/tulz/export.h
+        src/threading/rwp/Resource.cpp
+        include/tulz/threading/rwp/Resource.h
+        include/tulz/threading/rwp/ReadLock.h
+        include/tulz/threading/rwp/WriteLock.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
