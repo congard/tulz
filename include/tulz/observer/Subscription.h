@@ -1,11 +1,17 @@
 #ifndef TULZ_SUBSCRIPTION_H
 #define TULZ_SUBSCRIPTION_H
 
+#include <limits>
+#include <cstdint>
+
 #include "Observer.h"
 
 namespace tulz {
 template<typename ...Args>
 class Subject;
+
+using SubscriptionId = uint32_t;
+constexpr static auto InvalidSubscriptionId {std::numeric_limits<SubscriptionId>::max()};
 
 template<typename ...Args>
 class Subscription {
@@ -28,6 +34,7 @@ public:
         if (&rhs == this)
             return *this;
 
+        std::swap(m_id, rhs.m_id);
         std::swap(m_subject, rhs.m_subject);
         std::swap(m_observer, rhs.m_observer);
 
@@ -50,19 +57,24 @@ public:
         return m_observer->isMuted();
     }
 
+    SubscriptionId getId() const {
+        return m_id;
+    }
+
     Subject_t* getSubject() const {
         return m_subject;
     }
 
     bool isValid() const {
-        return m_subject != nullptr && m_observer != nullptr;
+        return m_subject != nullptr && m_subject->isSubscriptionValid(*this);
     }
 
 private:
-    Subscription(Subject_t *subject, Observer_t *observer)
-        : m_subject(subject), m_observer(observer) {}
+    Subscription(SubscriptionId id, Subject_t *subject, Observer_t *observer)
+        : m_id(id), m_subject(subject), m_observer(observer) {}
 
 private:
+    SubscriptionId m_id {InvalidSubscriptionId};
     Subject_t *m_subject {nullptr};
     Observer_t *m_observer {nullptr};
 };
