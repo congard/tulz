@@ -11,17 +11,26 @@ namespace tulz {
  * The class that represents a type-erased subscription.
  */
 class USubscription {
+protected:
     class Invoker;
 
     template<typename ...Args>
-    class InvokerImpl;
+    class DefaultInvoker;
 
 public:
     template<typename ...Args>
     USubscription(Subscription<Args...> subscription);
 
+    USubscription(USubscription &&other) noexcept;
+    USubscription& operator=(USubscription &&rhs) noexcept;
+
+    virtual ~USubscription() = default;
+
     Invoker* operator->();
     const Invoker* operator->() const;
+
+protected:
+    explicit USubscription(std::unique_ptr<Invoker> invoker);
 
 private:
     std::unique_ptr<Invoker> m_invoker;
@@ -41,11 +50,12 @@ public:
 };
 
 template<typename ...Args>
-class USubscription::InvokerImpl: public Invoker {
+class USubscription::DefaultInvoker: public Invoker {
+protected:
     using Subscription_t = Subscription<Args...>;
 
 public:
-    explicit InvokerImpl(Subscription_t &subscription)
+    explicit DefaultInvoker(Subscription_t &subscription)
         : m_subscription(std::move(subscription)) {}
 
     void unsubscribe() override {
@@ -74,7 +84,20 @@ private:
 
 template<typename ...Args>
 USubscription::USubscription(Subscription<Args...> subscription)
-    : m_invoker(std::make_unique<InvokerImpl<Args...>>(subscription)) {}
+    : m_invoker(std::make_unique<DefaultInvoker<Args...>>(subscription)) {}
+
+inline USubscription::USubscription(std::unique_ptr<Invoker> invoker)
+    : m_invoker(std::move(invoker)) {}
+
+inline USubscription::USubscription(USubscription &&other) noexcept
+    : m_invoker(std::move(other.m_invoker)) {}
+
+inline USubscription& USubscription::operator=(USubscription &&rhs) noexcept {
+    if (this == &rhs)
+        return *this;
+    m_invoker = std::move(rhs.m_invoker);
+    return *this;
+}
 
 inline USubscription::Invoker* USubscription::operator->() {
     return m_invoker.get();

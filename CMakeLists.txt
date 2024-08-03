@@ -44,7 +44,8 @@ set(TULZ_SOURCES
         src/threading/rwp/Resource.cpp
         include/tulz/threading/rwp/Resource.h
         include/tulz/threading/rwp/ReadLock.h
-        include/tulz/threading/rwp/WriteLock.h)
+        include/tulz/threading/rwp/WriteLock.h
+        include/tulz/observer/routing/ConcurrentSubjectRouter.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
