@@ -19,37 +19,40 @@ public:
     Subject() = default;
 
     Subscription_t subscribe(const Observer_t &observer) {
-        auto &inserted = m_observers.emplace_front(observer);
-        m_observersSet.emplace(&inserted);
-        return {this, &inserted};
+        auto &details = m_observers.emplace_front(observer, m_subscriptionCounter++);
+        m_activeSubscriptions.emplace(details.subscriptionId);
+        return {details.subscriptionId, this, &details.observer};
     }
 
     void unsubscribe(Subscription_t &subscription) {
-        if (!subscription.isValid())
+        if (!isSubscriptionValid(subscription))
             throw std::invalid_argument("Invalid subscription");
 
-        if (this != subscription.m_subject)
-            throw std::runtime_error("Cannot unsubscribe subscription that doesn't belong to this subject");
-
-        m_observers.remove_if([&subscription](const Observer_t &observer) {
-            return &observer == subscription.m_observer;
+        m_observers.remove_if([&subscription](const ObserverDetails &details) {
+            return details.subscriptionId == subscription.getId();
         });
 
-        m_observersSet.erase(subscription.m_observer);
+        m_activeSubscriptions.erase(subscription.getId());
 
+        subscription.m_id = InvalidSubscriptionId;
         subscription.m_subject = nullptr;
         subscription.m_observer = nullptr;
     }
 
     template<typename ...Args>
     void notify(Args&&... args) {
-        std::forward_list<Observer_t*> observers;
+        struct CachedDetails {
+            Observer_t *observer;
+            SubscriptionId subscriptionId;
+        };
 
-        for (Observer_t &observer : m_observers)
-            observers.emplace_front(&observer);
+        std::forward_list<CachedDetails> cachedDetails;
 
-        for (Observer_t *observer : observers) {
-            if (m_observersSet.find(observer) != m_observersSet.end()) {
+        for (auto &details : m_observers)
+            cachedDetails.emplace_front(&details.observer, details.subscriptionId);
+
+        for (auto [observer, subscriptionId] : cachedDetails) {
+            if (isSubscriptionIdValid(subscriptionId)) {
                 (*observer)(std::forward<Args>(args)...);
             }
         }
@@ -59,9 +62,25 @@ public:
         return !m_observers.empty();
     }
 
+    bool isSubscriptionValid(const Subscription_t &subscription) const {
+        return subscription.m_subject == this && isSubscriptionIdValid(subscription.getId());
+    }
+
 private:
-    std::forward_list<Observer_t> m_observers;
-    std::set<Observer_t*> m_observersSet;
+    bool isSubscriptionIdValid(SubscriptionId subscriptionId) const {
+        return m_activeSubscriptions.find(subscriptionId) != m_activeSubscriptions.end();
+    }
+
+private:
+    struct ObserverDetails {
+        Observer_t observer;
+        SubscriptionId subscriptionId;
+    };
+
+    std::forward_list<ObserverDetails> m_observers;
+    std::set<SubscriptionId> m_activeSubscriptions;
+
+    SubscriptionId m_subscriptionCounter {0};
 };
 }
 

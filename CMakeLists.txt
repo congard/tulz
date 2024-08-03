@@ -75,6 +75,3 @@ if (ANDROID)
 endif()
 
 target_link_libraries(tulz ${LINK_LIBRARIES})
-
-add_executable(tulz-examples examples/example.cpp)
-target_link_libraries(tulz-examples tulz)
