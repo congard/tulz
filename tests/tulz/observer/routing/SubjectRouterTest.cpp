@@ -1,17 +1,23 @@
 #include <gtest/gtest.h>
 
 #include <tulz/observer/routing/SubjectRouter.h>
+#include <tulz/observer/routing/ConcurrentSubjectRouter.h>
 #include <tulz/observer/routing/RoutingKeyBuilder.h>
 
 using namespace tulz;
 
-TEST(SubjectRouterTest, SubscribeNotify) {
-    SubjectRouter router;
+using SubjectRouterTypes = testing::Types<SubjectRouter, ConcurrentSubjectRouter>;
+template<typename T> struct SubjectRouterCommonTest : testing::Test {};
 
-    auto fooBarKey = RoutingKeyBuilder {"foo", "bar"}.build();
-    auto fooBazKey = RoutingKeyBuilder {"foo", "baz"}.build();
-    auto fooBazQuxKey = RoutingKeyBuilder {"foo", "baz", "qux"}.build();
-    auto fooAllKey = RoutingKeyBuilder {}.level("foo").all().build();
+TYPED_TEST_SUITE(SubjectRouterCommonTest, SubjectRouterTypes);
+
+TYPED_TEST(SubjectRouterCommonTest, SubscribeNotify) {
+    TypeParam router;
+
+    auto fooBarKey {RoutingKeyBuilder{"foo", "bar"}.build()};
+    auto fooBazKey {RoutingKeyBuilder{"foo", "baz"}.build()};
+    auto fooBazQuxKey {RoutingKeyBuilder{"foo", "baz", "qux"}.build()};
+    auto fooAllKey {RoutingKeyBuilder{}.level("foo").all().build()};
 
     int fooBarCounter = 0;
     int fooBazCounter = 0;
@@ -27,7 +33,7 @@ TEST(SubjectRouterTest, SubscribeNotify) {
         ++fooBazCounter;
     });
 
-    router.subscribe<const std::string&>(fooBazQuxKey, [&](const std::string &payload) {
+    router.template subscribe<const std::string&>(fooBazQuxKey, [&](const std::string &payload) {
         std::cout << "/foo/baz/qux, payload: " << payload << "\n";
         ++fooBazQuxCounter;
     });
@@ -50,19 +56,19 @@ TEST(SubjectRouterTest, SubscribeNotify) {
     ASSERT_EQ(2, fooBazCounter);
     ASSERT_EQ(0, fooBazQuxCounter);
 
-    router.notify<const std::string&>(fooBazQuxKey, "Hello, qux!");
+    router.template notify<const std::string&>(fooBazQuxKey, "Hello, qux!");
 
     ASSERT_EQ(2, fooBarCounter);
     ASSERT_EQ(2, fooBazCounter);
     ASSERT_EQ(1, fooBazQuxCounter);
 }
 
-TEST(SubjectRouterTest, Exists) {
-    SubjectRouter router;
+TYPED_TEST(SubjectRouterCommonTest, Exists) {
+    TypeParam router;
 
-    auto fooBarKey = RoutingKeyBuilder {"foo", "bar"}.build();
-    auto fooBazKey = RoutingKeyBuilder {"foo", "baz"}.build();
-    auto fooBazQuxKey = RoutingKeyBuilder {"foo", "baz", "qux"}.build();
+    auto fooBarKey {RoutingKeyBuilder{"foo", "bar"}.build()};
+    auto fooBazKey {RoutingKeyBuilder{"foo", "baz"}.build()};
+    auto fooBazQuxKey {RoutingKeyBuilder{"foo", "baz", "qux"}.build()};
 
     router.subscribe(fooBarKey, []() {});
     router.subscribe(fooBazKey, []() {});
@@ -80,20 +86,20 @@ TEST(SubjectRouterTest, Exists) {
     ASSERT_FALSE(router.exists(RoutingKeyBuilder {"foo", "bar", "qux"}.build()));
 }
 
-TEST(SubjectRouterTest, Shrink) {
-    SubjectRouter router;
+TYPED_TEST(SubjectRouterCommonTest, Shrink) {
+    TypeParam router;
 
-    auto fooKey = RoutingKeyBuilder {"foo"}.build();
-    auto fooBarKey = RoutingKeyBuilder {"foo", "bar"}.build();
-    auto fooBazKey = RoutingKeyBuilder {"foo", "baz"}.build();
-    auto fooBarQuxKey = RoutingKeyBuilder {"foo", "bar", "qux"}.build();
-    auto fooBazQuxKey = RoutingKeyBuilder {"foo", "baz", "qux"}.build();
-    auto tripleAllKey = RoutingKeyBuilder {}.all().all().all().build();
+    auto fooKey {RoutingKeyBuilder{"foo"}.build()};
+    auto fooBarKey {RoutingKeyBuilder{"foo", "bar"}.build()};
+    auto fooBazKey {RoutingKeyBuilder{"foo", "baz"}.build()};
+    auto fooBarQuxKey {RoutingKeyBuilder{"foo", "bar", "qux"}.build()};
+    auto fooBazQuxKey {RoutingKeyBuilder{"foo", "baz", "qux"}.build()};
+    auto tripleAllKey {RoutingKeyBuilder{}.all().all().all().build()};
 
-    auto fooBarSub = router.subscribe(fooBarKey, [] {});
-    auto fooBazSub = router.subscribe(fooBazKey, [] {});
-    auto fooBarQuxSub = router.subscribe(fooBarQuxKey, [] {});
-    auto fooBazQuxSub = router.subscribe(fooBazQuxKey, [] {});
+    USubscription fooBarSub {router.subscribe(fooBarKey, [] {})};
+    USubscription fooBazSub {router.subscribe(fooBazKey, [] {})};
+    USubscription fooBarQuxSub {router.subscribe(fooBarQuxKey, [] {})};
+    USubscription fooBazQuxSub {router.subscribe(fooBazQuxKey, [] {})};
 
     /*
      * /
@@ -111,7 +117,7 @@ TEST(SubjectRouterTest, Shrink) {
     ASSERT_TRUE(router.exists(fooBarQuxKey));
     ASSERT_TRUE(router.exists(fooBazQuxKey));
 
-    fooBarSub.unsubscribe();
+    fooBarSub->unsubscribe();
     router.shrink(tripleAllKey);
 
     // /foo/bar/qux still exists
@@ -121,7 +127,7 @@ TEST(SubjectRouterTest, Shrink) {
     ASSERT_TRUE(router.exists(fooBarQuxKey));
     ASSERT_TRUE(router.exists(fooBazQuxKey));
 
-    fooBarQuxSub.unsubscribe();
+    fooBarQuxSub->unsubscribe();
     router.shrink(tripleAllKey);
 
     // /foo/bar has been also removed
@@ -131,8 +137,8 @@ TEST(SubjectRouterTest, Shrink) {
     ASSERT_FALSE(router.exists(fooBarQuxKey));
     ASSERT_TRUE(router.exists(fooBazQuxKey));
 
-    fooBazSub.unsubscribe();
-    fooBazQuxSub.unsubscribe();
+    fooBazSub->unsubscribe();
+    fooBazQuxSub->unsubscribe();
     router.shrink(tripleAllKey);
 
     // /foo has been also removed
@@ -142,12 +148,12 @@ TEST(SubjectRouterTest, Shrink) {
     ASSERT_FALSE(router.exists(fooBazQuxKey));
 }
 
-TEST(SubjectRouterTest, Depth) {
-    SubjectRouter router;
+TYPED_TEST(SubjectRouterCommonTest, Depth) {
+    TypeParam router;
 
-    auto fooBarKey = RoutingKeyBuilder {"foo", "bar"}.build();
-    auto fooBazKey = RoutingKeyBuilder {"foo", "baz"}.build();
-    auto fooBazQuxKey = RoutingKeyBuilder {"foo", "baz", "qux"}.build();
+    auto fooBarKey {RoutingKeyBuilder{"foo", "bar"}.build()};
+    auto fooBazKey {RoutingKeyBuilder{"foo", "baz"}.build()};
+    auto fooBazQuxKey {RoutingKeyBuilder{"foo", "baz", "qux"}.build()};
 
     router.subscribe(fooBarKey, []() {});
     router.subscribe(fooBazKey, []() {});
