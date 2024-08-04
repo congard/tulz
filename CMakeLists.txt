@@ -46,7 +46,10 @@ set(TULZ_SOURCES
         include/tulz/threading/rwp/ReadLock.h
         include/tulz/threading/rwp/WriteLock.h
         include/tulz/observer/routing/ConcurrentSubjectRouter.h
-        include/tulz/observer/ObserverAutoPtr.h)
+        include/tulz/observer/ObserverAutoPtr.h
+        include/tulz/observer/EternalObserver.h
+        include/tulz/observer/detail/ObserverFactory.h
+        include/tulz/observer/EternalObserverFactory.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES
