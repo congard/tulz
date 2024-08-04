@@ -86,8 +86,16 @@ private:
         template<typename ...Args>
         size_t notify(RoutingLevelView levelView, Args &&...args);
 
+        template<typename ...Args, typename F>
+        Subscription<Args...> subscribe(
+                RoutingLevelView levelView,
+                const Observer<Args...> &observer,
+                F &&subjectFactory);
+
         template<typename ...Args>
-        Subscription<Args...> subscribe(RoutingLevelView levelView, const Observer<Args...> &observer);
+        Subscription<Args...> subscribe(RoutingLevelView levelView, const Observer<Args...> &observer) {
+            return subscribe(levelView, observer, [] { return new Subject_t<Args...>(); });
+        }
 
         void shrink(RoutingLevelView levelView);
 
@@ -144,7 +152,7 @@ size_t SubjectRouter::Node::notify(RoutingLevelView levelView, Args &&...args) {
             size_t notifyCount = 0;
 
             for (auto & [name, node] : m_children)
-                notifyCount += node.notify(nextLevel, std::forward<Args>(args)...);
+                notifyCount += node.notify(nextLevel, args...);
 
             return notifyCount;
         } else {
@@ -157,13 +165,19 @@ size_t SubjectRouter::Node::notify(RoutingLevelView levelView, Args &&...args) {
     return 0;
 }
 
-template<typename ...Args>
+template<typename ...Args, typename F>
 Subscription<Args...>
-SubjectRouter::Node::subscribe(RoutingLevelView levelView, const Observer<Args...> &observer) {
+SubjectRouter::Node::subscribe(
+    RoutingLevelView levelView,
+    const Observer<Args...> &observer,
+    F &&subjectFactory
+) {
+    // TODO: static_assert for F
+
     auto &node = lookupNode(levelView);
 
     if (node.m_subject == nullptr) {
-        auto subject = new Subject_t<Args...>();
+        auto subject = static_cast<Subject_t<Args...>*>(subjectFactory());
         node.m_subject.reset(reinterpret_cast<DefaultSubject_t*>(subject));
     }
 

@@ -9,11 +9,11 @@
 #include "Subscription.h"
 
 namespace tulz {
-template<typename ...Args_>
+template<typename ...Args>
 class Subject {
 public:
-    using Subscription_t = Subscription<Args_...>;
-    using Observer_t = Observer<Args_...>;
+    using Subscription_t = Subscription<Args...>;
+    using Observer_t = Observer<Args...>;
 
 public:
     Subject() = default;
@@ -39,8 +39,7 @@ public:
         subscription.m_observer = nullptr;
     }
 
-    template<typename ...Args>
-    void notify(Args&&... args) {
+    void notify(Args... args) {
         struct CachedDetails {
             Observer_t *observer;
             SubscriptionId subscriptionId;
@@ -53,7 +52,7 @@ public:
 
         for (auto [observer, subscriptionId] : cachedDetails) {
             if (isSubscriptionIdValid(subscriptionId)) {
-                (*observer)(std::forward<Args>(args)...);
+                (*observer)(args...);
             }
         }
     }
