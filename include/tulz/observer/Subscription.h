@@ -65,6 +65,10 @@ public:
         return m_subject;
     }
 
+    Observer_t* getObserver() const {
+        return m_observer;
+    }
+
     bool isValid() const {
         return m_subject != nullptr && m_subject->isSubscriptionValid(*this);
     }
