@@ -2,12 +2,16 @@
 #define TULZ_SUBJECTROUTER_H
 
 #include <tulz/observer/Subject.h>
+#include <tulz/observer/ObserverAutoPtr.h>
 #include <tulz/observer/routing/RoutingKey.h>
 
 #include <memory>
 #include <map>
 
 namespace tulz {
+template<typename S, typename F>
+concept IsSubjectFactory = std::is_invocable_r_v<S*, F>;
+
 class TULZ_API SubjectRouter {
     template<typename ...Args>
     using Subject_t = Subject<Args...>;
@@ -44,14 +48,9 @@ public:
      * @param callable The callable (callback) to subscribe.
      * @return The subscription.
      */
-    template<typename ...Args, typename C>
-    Subscription<Args...> subscribe(const RoutingKey &key, C &&callable) {
-        if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<C>>, Observer<Args...>>) {
-            return m_rootNode.subscribe(key, callable);
-        } else {
-            static_assert(std::is_invocable_r_v<void, C, Args...>);
-            return m_rootNode.subscribe(key, Observer<Args...>(std::forward<C>(callable)));
-        }
+    template<typename ...Args, typename O>
+    Subscription<Args...> subscribe(const RoutingKey &key, O &&observer) {
+        return m_rootNode.subscribe(key, *ObserverAutoPtr<Args...>(std::forward<O>(observer)));
     }
 
     /**
@@ -89,12 +88,12 @@ private:
         template<typename ...Args, typename F>
         Subscription<Args...> subscribe(
                 RoutingLevelView levelView,
-                const Observer<Args...> &observer,
-                F &&subjectFactory);
+                ObserverPtr<Args...> observer,
+                F &&subjectFactory) requires IsSubjectFactory<Subject_t<Args...>, F>;
 
         template<typename ...Args>
-        Subscription<Args...> subscribe(RoutingLevelView levelView, const Observer<Args...> &observer) {
-            return subscribe(levelView, observer, [] { return new Subject_t<Args...>(); });
+        Subscription<Args...> subscribe(RoutingLevelView levelView, ObserverPtr<Args...> observer) {
+            return subscribe(levelView, std::move(observer), [] { return new Subject_t<Args...>(); });
         }
 
         void shrink(RoutingLevelView levelView);
@@ -169,11 +168,9 @@ template<typename ...Args, typename F>
 Subscription<Args...>
 SubjectRouter::Node::subscribe(
     RoutingLevelView levelView,
-    const Observer<Args...> &observer,
+    ObserverPtr<Args...> observer,
     F &&subjectFactory
-) {
-    // TODO: static_assert for F
-
+) requires IsSubjectFactory<Subject_t<Args...>, F> {
     auto &node = lookupNode(levelView);
 
     if (node.m_subject == nullptr) {
@@ -183,7 +180,7 @@ SubjectRouter::Node::subscribe(
 
     auto &dstSubject = *reinterpret_cast<Subject_t<Args...>*>(node.m_subject.get());
 
-    return dstSubject.subscribe(observer);
+    return dstSubject.subscribe(std::move(observer));
 }
 } // tulz
 

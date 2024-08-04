@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(tulz)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include)
 
@@ -45,7 +45,11 @@ set(TULZ_SOURCES
         include/tulz/threading/rwp/Resource.h
         include/tulz/threading/rwp/ReadLock.h
         include/tulz/threading/rwp/WriteLock.h
-        include/tulz/observer/routing/ConcurrentSubjectRouter.h)
+        include/tulz/observer/routing/ConcurrentSubjectRouter.h
+        include/tulz/observer/ObserverAutoPtr.h
+        include/tulz/observer/EternalObserver.h
+        include/tulz/observer/detail/ObserverFactory.h
+        include/tulz/observer/EternalObserverFactory.h)
 
 if (ANDROID)
     set(TULZ_ANDROID_SOURCES

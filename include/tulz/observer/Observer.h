@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <memory>
 
 namespace tulz {
 template<typename ...Args>
@@ -14,12 +15,25 @@ public:
         bool mute {false};
     };
 
+    class SelfView {
+    public:
+        SelfView(Observer *self)
+            : m_self(self) {}
+
+        auto operator->() const {
+            return m_self;
+        }
+
+    private:
+        Observer *m_self;
+    };
+
 public:
     Observer() = default;
+    virtual ~Observer() = default;
 
-    template<typename T>
-    Observer(T &&func, Params params = {})
-        : m_func(std::forward<T>(func)),
+    Observer(Func func, Params params = {})
+        : m_func(std::move(func)),
           m_params(std::move(params)) {}
 
     Observer(const Observer &that)
@@ -29,9 +43,9 @@ public:
         *this = std::move(that);
     }
 
-    template<typename T>
-    Observer& operator=(T &&func) {
-        m_func = func;
+    Observer& operator=(Func func) {
+        m_func = std::move(func);
+        return *this;
     }
 
     Observer& operator=(const Observer &that) {
@@ -50,11 +64,15 @@ public:
         return *this;
     }
 
-    void operator()(Args... args) {
-        if (!isMuted()) {
+    virtual void operator()(Args... args) {
+        if (!isMuted() && isValid()) {
             m_func(std::forward<Args>(args)...);
         }
     }
+
+    virtual bool isValid() const = 0;
+
+    virtual void invalidate() = 0;
 
     void mute() {
         m_params.mute = true;
@@ -72,6 +90,9 @@ private:
     Func m_func;
     Params m_params;
 };
+
+template<typename ...Args>
+using ObserverPtr = std::unique_ptr<Observer<Args...>>;
 }
 
 #endif //TULZ_OBSERVER_H
