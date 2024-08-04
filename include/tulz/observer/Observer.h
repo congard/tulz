@@ -15,6 +15,19 @@ public:
         bool mute {false};
     };
 
+    class SelfView {
+    public:
+        SelfView(Observer *self)
+            : m_self(self) {}
+
+        auto operator->() const {
+            return m_self;
+        }
+
+    private:
+        Observer *m_self;
+    };
+
 public:
     Observer() = default;
     virtual ~Observer() = default;
