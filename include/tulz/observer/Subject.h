@@ -31,11 +31,7 @@ public:
         if (!isSubscriptionValid(subscription))
             throw std::invalid_argument("Invalid subscription");
 
-        m_observers.remove_if([&subscription](const ObserverDetails &details) {
-            return details.subscriptionId == subscription.getId();
-        });
-
-        m_activeSubscriptions.erase(subscription.getId());
+        unsubscribeById(subscription.getId());
 
         subscription.m_id = InvalidSubscriptionId;
         subscription.m_subject = nullptr;
@@ -56,6 +52,10 @@ public:
         for (auto [observer, subscriptionId] : cachedDetails) {
             if (isSubscriptionIdValid(subscriptionId)) {
                 (*observer)(args...);
+
+                if (!observer->isValid()) {
+                    unsubscribeById(subscriptionId);
+                }
             }
         }
     }
@@ -71,6 +71,14 @@ public:
 private:
     bool isSubscriptionIdValid(SubscriptionId subscriptionId) const {
         return m_activeSubscriptions.contains(subscriptionId);
+    }
+
+    void unsubscribeById(SubscriptionId subscriptionId) {
+        m_observers.remove_if([subscriptionId](const ObserverDetails &details) {
+            return details.subscriptionId == subscriptionId;
+        });
+
+        m_activeSubscriptions.erase(subscriptionId);
     }
 
 private:
