@@ -2,6 +2,7 @@
 #define TULZ_OBSERVERAUTOPTR_H
 
 #include <tulz/observer/Observer.h>
+#include <tulz/observer/EternalObserver.h>
 
 #include <concepts>
 
@@ -24,7 +25,7 @@ template<typename ...Args>
 class ObserverAutoPtr {
 public:
     using BaseObserver = Observer<Args...>;
-    using DefaultObserver = Observer<Args...>;
+    using DefaultObserver = EternalObserver<Args...>;
     using Ptr = std::unique_ptr<BaseObserver>;
 
 public:
