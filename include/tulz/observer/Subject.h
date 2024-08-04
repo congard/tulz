@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "Observer.h"
+#include "ObserverAutoPtr.h"
 #include "Subscription.h"
 
 namespace tulz {
@@ -14,14 +15,16 @@ class Subject {
 public:
     using Subscription_t = Subscription<Args...>;
     using Observer_t = Observer<Args...>;
+    using ObserverPtr_t = ObserverPtr<Args...>;
+    using ObserverAutoPtr_t = ObserverAutoPtr<Args...>;
 
 public:
     Subject() = default;
 
-    Subscription_t subscribe(const Observer_t &observer) {
-        auto &details = m_observers.emplace_front(observer, m_subscriptionCounter++);
+    Subscription_t subscribe(ObserverAutoPtr_t observerAutoPtr) {
+        auto &details = m_observers.emplace_front(*observerAutoPtr, m_subscriptionCounter++);
         m_activeSubscriptions.emplace(details.subscriptionId);
-        return {details.subscriptionId, this, &details.observer};
+        return {details.subscriptionId, this, details.observer.get()};
     }
 
     void unsubscribe(Subscription_t &subscription) {
@@ -48,7 +51,7 @@ public:
         std::forward_list<CachedDetails> cachedDetails;
 
         for (auto &details : m_observers)
-            cachedDetails.emplace_front(&details.observer, details.subscriptionId);
+            cachedDetails.emplace_front(details.observer.get(), details.subscriptionId);
 
         for (auto [observer, subscriptionId] : cachedDetails) {
             if (isSubscriptionIdValid(subscriptionId)) {
@@ -67,12 +70,12 @@ public:
 
 private:
     bool isSubscriptionIdValid(SubscriptionId subscriptionId) const {
-        return m_activeSubscriptions.find(subscriptionId) != m_activeSubscriptions.end();
+        return m_activeSubscriptions.contains(subscriptionId);
     }
 
 private:
     struct ObserverDetails {
-        Observer_t observer;
+        ObserverPtr_t observer;
         SubscriptionId subscriptionId;
     };
 

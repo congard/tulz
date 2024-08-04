@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <memory>
 
 namespace tulz {
 template<typename ...Args>
@@ -17,9 +18,8 @@ public:
 public:
     Observer() = default;
 
-    template<typename T>
-    Observer(T &&func, Params params = {})
-        : m_func(std::forward<T>(func)),
+    Observer(Func func, Params params = {})
+        : m_func(std::move(func)),
           m_params(std::move(params)) {}
 
     Observer(const Observer &that)
@@ -29,9 +29,8 @@ public:
         *this = std::move(that);
     }
 
-    template<typename T>
-    Observer& operator=(T &&func) {
-        m_func = func;
+    Observer& operator=(Func func) {
+        m_func = std::move(func);
     }
 
     Observer& operator=(const Observer &that) {
@@ -72,6 +71,9 @@ private:
     Func m_func;
     Params m_params;
 };
+
+template<typename ...Args>
+using ObserverPtr = std::unique_ptr<Observer<Args...>>;
 }
 
 #endif //TULZ_OBSERVER_H

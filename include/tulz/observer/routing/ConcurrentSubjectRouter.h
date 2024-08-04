@@ -29,10 +29,10 @@ public:
         return m_router.notify(key, std::forward<Args>(args)...);
     }
 
-    template<typename ...Args, typename C>
-    USubscription subscribe(const RoutingKey &key, C &&callable) {
+    template<typename ...Args, typename O>
+    USubscription subscribe(const RoutingKey &key, O &&observer) {
         rwp::WriteLock lock {m_resource};
-        return Subscription(m_resource, m_router.subscribe<Args...>(key, std::forward<C>(callable)));
+        return Subscription(m_resource, m_router.subscribe<Args...>(key, std::forward<O>(observer)));
     }
 
     inline void shrink(const RoutingKey &key) {
