@@ -17,6 +17,7 @@ public:
 
 public:
     Observer() = default;
+    virtual ~Observer() = default;
 
     Observer(Func func, Params params = {})
         : m_func(std::move(func)),
@@ -31,6 +32,7 @@ public:
 
     Observer& operator=(Func func) {
         m_func = std::move(func);
+        return *this;
     }
 
     Observer& operator=(const Observer &that) {
@@ -49,11 +51,15 @@ public:
         return *this;
     }
 
-    void operator()(Args... args) {
-        if (!isMuted()) {
+    virtual void operator()(Args... args) {
+        if (!isMuted() && isValid()) {
             m_func(std::forward<Args>(args)...);
         }
     }
+
+    virtual bool isValid() const = 0;
+
+    virtual void invalidate() = 0;
 
     void mute() {
         m_params.mute = true;
