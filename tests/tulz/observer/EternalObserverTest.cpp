@@ -7,7 +7,7 @@
 using namespace tulz;
 
 TEST(EternalObserverTest, SelfInvalidate) {
-    Subject<> subject;
+    Subject subject;
     int counter {0};
 
     using Observer = EternalObserver<>;
