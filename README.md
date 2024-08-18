@@ -1,16 +1,16 @@
 # Tulz
 
-Tulz is a light-weight cross-platform C++17 tools library for C++ development.
+Tulz is a light-weight cross-platform C++20 tools library for C++ development.
 It contains reusable classes that I use in my projects. 
 
 ## Compilers support
 
 Tested under:
 
-| Linux | Windows              | Android          |
-|-------|----------------------|------------------|
-| GCC   | MSVC 19.37.32824 x64 | NDK 22.0.7026061 |
-| Clang | Clang 16.0.0         |                  |
+| Linux        | Windows              | Android          |
+|--------------|----------------------|------------------|
+| GCC 13.3.1   | MSVC 19.37.32824 x64 | NDK 22.0.7026061 |
+| Clang 17.0.6 | Clang 16.0.0         |                  |
 
 ## Installation
 
