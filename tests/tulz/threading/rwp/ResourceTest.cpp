@@ -97,14 +97,14 @@ TEST(ResourceTest, SimulaneousReadBlockingWrite) {
     } while (false)
 
     // simultaneous read
-    ASSERT_ACTION(0, Action::Type::Read, 0, 20);
-    ASSERT_ACTION(1, Action::Type::Read, 0, 20);
+    ASSERT_ACTION(0, Action::Type::Read, 0, 25);
+    ASSERT_ACTION(1, Action::Type::Read, 0, 25);
 
     // sequential write
-    ASSERT_ACTION(2, Action::Type::Write, 1000, 30);
-    ASSERT_ACTION(3, Action::Type::Write, 2000, 30);
+    ASSERT_ACTION(2, Action::Type::Write, 1000, 50);
+    ASSERT_ACTION(3, Action::Type::Write, 2000, 50);
 
     // simultaneous read
-    ASSERT_ACTION(4, Action::Type::Read, 3000, 40);
-    ASSERT_ACTION(5, Action::Type::Read, 3000, 40);
+    ASSERT_ACTION(4, Action::Type::Read, 3000, 100);
+    ASSERT_ACTION(5, Action::Type::Read, 3000, 100);
 }
