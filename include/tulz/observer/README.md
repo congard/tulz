@@ -6,6 +6,8 @@ Note: `Subject` is not thread safe
 
 ## Usage
 
+For more examples, see tests.
+
 ### Subject
 
 ```c++
@@ -73,9 +75,6 @@ Value changed: 4
 ```
 
 ## TODO
-
-1. `AsyncSubjectRouter` - thread-safe version of `SubjectRouter`, with correct reader-writer problem handling
-   (task queue);
 
 It might be worth implementing:
 

@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "Observer.h"
+#include "ObserverAutoPtr.h"
 #include "Subscription.h"
 
 namespace tulz {
@@ -14,25 +15,23 @@ class Subject {
 public:
     using Subscription_t = Subscription<Args...>;
     using Observer_t = Observer<Args...>;
+    using ObserverPtr_t = ObserverPtr<Args...>;
+    using ObserverAutoPtr_t = ObserverAutoPtr<Args...>;
 
 public:
     Subject() = default;
 
-    Subscription_t subscribe(const Observer_t &observer) {
-        auto &details = m_observers.emplace_front(observer, m_subscriptionCounter++);
+    Subscription_t subscribe(ObserverAutoPtr_t observerAutoPtr) {
+        auto &details = m_observers.emplace_front(*observerAutoPtr, m_subscriptionCounter++);
         m_activeSubscriptions.emplace(details.subscriptionId);
-        return {details.subscriptionId, this, &details.observer};
+        return {details.subscriptionId, this, details.observer.get()};
     }
 
     void unsubscribe(Subscription_t &subscription) {
         if (!isSubscriptionValid(subscription))
             throw std::invalid_argument("Invalid subscription");
 
-        m_observers.remove_if([&subscription](const ObserverDetails &details) {
-            return details.subscriptionId == subscription.getId();
-        });
-
-        m_activeSubscriptions.erase(subscription.getId());
+        unsubscribeById(subscription.getId());
 
         subscription.m_id = InvalidSubscriptionId;
         subscription.m_subject = nullptr;
@@ -48,11 +47,15 @@ public:
         std::forward_list<CachedDetails> cachedDetails;
 
         for (auto &details : m_observers)
-            cachedDetails.emplace_front(&details.observer, details.subscriptionId);
+            cachedDetails.emplace_front(details.observer.get(), details.subscriptionId);
 
         for (auto [observer, subscriptionId] : cachedDetails) {
             if (isSubscriptionIdValid(subscriptionId)) {
                 (*observer)(args...);
+
+                if (!observer->isValid()) {
+                    unsubscribeById(subscriptionId);
+                }
             }
         }
     }
@@ -67,12 +70,20 @@ public:
 
 private:
     bool isSubscriptionIdValid(SubscriptionId subscriptionId) const {
-        return m_activeSubscriptions.find(subscriptionId) != m_activeSubscriptions.end();
+        return m_activeSubscriptions.contains(subscriptionId);
+    }
+
+    void unsubscribeById(SubscriptionId subscriptionId) {
+        m_observers.remove_if([subscriptionId](const ObserverDetails &details) {
+            return details.subscriptionId == subscriptionId;
+        });
+
+        m_activeSubscriptions.erase(subscriptionId);
     }
 
 private:
     struct ObserverDetails {
-        Observer_t observer;
+        ObserverPtr_t observer;
         SubscriptionId subscriptionId;
     };
 

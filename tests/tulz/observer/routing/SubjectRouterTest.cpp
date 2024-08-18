@@ -23,10 +23,10 @@ TYPED_TEST(SubjectRouterCommonTest, SubscribeNotify) {
     int fooBazCounter = 0;
     int fooBazQuxCounter = 0;
 
-    router.subscribe(fooBarKey, Observer([&]() {
+    router.subscribe(fooBarKey, [&]() {
         std::cout << "/foo/bar\n";
         ++fooBarCounter;
-    }));
+    });
 
     router.subscribe(fooBazKey, [&]() {
         std::cout << "/foo/baz\n";
