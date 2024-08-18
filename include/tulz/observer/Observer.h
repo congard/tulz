@@ -36,31 +36,14 @@ public:
         : m_func(std::move(func)),
           m_params(std::move(params)) {}
 
-    Observer(const Observer &that)
-        : Observer(that.m_func, that.m_params) {}
+    Observer(const Observer&) = default;
+    Observer(Observer&&) noexcept = default;
 
-    Observer(Observer &&that) noexcept {
-        *this = std::move(that);
-    }
+    Observer& operator=(const Observer&) = default;
+    Observer& operator=(Observer&&) noexcept = default;
 
     Observer& operator=(Func func) {
         m_func = std::move(func);
-        return *this;
-    }
-
-    Observer& operator=(const Observer &that) {
-        if (this == &that)
-            return *this;
-        m_func = that.m_func;
-        m_params = that.m_params;
-        return *this;
-    }
-
-    Observer& operator=(Observer &&that) noexcept {
-        if (this == &that)
-            return *this;
-        std::swap(m_func, that.m_func);
-        std::swap(m_params, that.m_params);
         return *this;
     }
 
