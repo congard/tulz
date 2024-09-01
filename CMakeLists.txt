@@ -8,7 +8,6 @@ set(TULZ_OBSERVER_SOURCES
         include/tulz/observer/Subject.h
         include/tulz/observer/Subscription.h
         include/tulz/observer/Observable.h
-        include/tulz/observer/ObservableNumber.h
         include/tulz/observer/USubscription.h
         src/observer/routing/RoutingKey.cpp
         include/tulz/observer/routing/RoutingKey.h

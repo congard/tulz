@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(tulz-tests)
 
+enable_testing()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -47,5 +49,6 @@ add_gtest(RoutingLevelViewTest tulz/observer/routing/RoutingLevelViewTest.cpp)
 add_gtest(SubjectRouterTest tulz/observer/routing/SubjectRouterTest.cpp)
 
 add_gtest(EternalObserverTest tulz/observer/EternalObserverTest.cpp)
+add_gtest(ObservableTest tulz/observer/ObservableTest.cpp)
 
 add_gtest(ResourceTest tulz/threading/rwp/ResourceTest.cpp)
