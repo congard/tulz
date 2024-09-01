@@ -4,6 +4,11 @@
 #include <cassert>
 #include <cstring>
 
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+using ssize_t = SSIZE_T;
+#endif
+
 #include "RandomAccessIndexIterator.h"
 
 namespace tulz {
