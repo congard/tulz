@@ -53,7 +53,6 @@ set(TULZ_UTIL_SOURCES
 
 set(TULZ_GENERAL_SOURCES
         include/tulz/Path.h src/Path.cpp
-        include/tulz/StringUtils.h src/StringUtils.cpp
         include/tulz/File.h src/File.cpp
         include/tulz/Exception.h src/Exception.cpp
         include/tulz/DirectoryVisitor.h src/DirectoryVisitor.cpp
