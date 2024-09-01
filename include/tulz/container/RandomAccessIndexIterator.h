@@ -52,19 +52,19 @@ public:
         return *this;
     }
 
-    RandomAccessIndexIterator operator+(difference_type i) {
+    RandomAccessIndexIterator operator+(difference_type i) const {
         RandomAccessIndexIterator it = *this;
         it += i;
         return it;
     }
 
-    RandomAccessIndexIterator operator-(difference_type i) {
+    RandomAccessIndexIterator operator-(difference_type i) const {
         RandomAccessIndexIterator it = *this;
         it -= i;
         return it;
     }
 
-    difference_type operator-(RandomAccessIndexIterator other) {
+    difference_type operator-(RandomAccessIndexIterator other) const {
         return m_index - other.m_index;
     }
 
