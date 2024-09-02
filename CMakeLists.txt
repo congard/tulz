@@ -22,7 +22,8 @@ set(TULZ_OBSERVER_SOURCES
         include/tulz/observer/ObserverAutoPtr.h
         include/tulz/observer/EternalObserver.h
         include/tulz/observer/detail/ObserverFactory.h
-        include/tulz/observer/EternalObserverFactory.h)
+        include/tulz/observer/EternalObserverFactory.h
+        include/tulz/observer/EternalObserverAutoPtr.h)
 
 set(TULZ_THREADING_SOURCES
         include/tulz/threading/Runnable.h

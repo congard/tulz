@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 #include "Observer.h"
-#include "ObserverAutoPtr.h"
+#include "EternalObserverAutoPtr.h"
 #include "Subscription.h"
 
 namespace tulz {
@@ -16,7 +16,7 @@ public:
     using Subscription_t = Subscription<Args...>;
     using Observer_t = Observer<Args...>;
     using ObserverPtr_t = ObserverPtr<Args...>;
-    using ObserverAutoPtr_t = ObserverAutoPtr<Args...>;
+    using ObserverAutoPtr_t = EternalObserverAutoPtr<Args...>;
 
 public:
     Subject() = default;

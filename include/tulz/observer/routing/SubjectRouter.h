@@ -2,7 +2,7 @@
 #define TULZ_SUBJECTROUTER_H
 
 #include <tulz/observer/Subject.h>
-#include <tulz/observer/ObserverAutoPtr.h>
+#include <tulz/observer/EternalObserverAutoPtr.h>
 #include <tulz/observer/routing/RoutingKey.h>
 
 #include <memory>
@@ -17,6 +17,9 @@ class TULZ_API SubjectRouter {
     using Subject_t = Subject<Args...>;
 
     using DefaultSubject_t = Subject_t<>;
+
+    template<typename ...Args>
+    using ObserverAutoPtr_t = EternalObserverAutoPtr<Args...>;
 
 public:
     SubjectRouter();
@@ -50,7 +53,7 @@ public:
      */
     template<typename ...Args, typename O>
     Subscription<Args...> subscribe(const RoutingKey &key, O &&observer) {
-        return m_rootNode.subscribe(key, *ObserverAutoPtr<Args...>(std::forward<O>(observer)));
+        return m_rootNode.subscribe(key, *ObserverAutoPtr_t<Args...>(std::forward<O>(observer)));
     }
 
     /**

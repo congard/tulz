@@ -3,6 +3,7 @@
 #include <tulz/observer/Subject.h>
 #include <tulz/observer/EternalObserver.h>
 #include <tulz/observer/EternalObserverFactory.h>
+#include <tulz/observer/EternalObserverAutoPtr.h>
 
 using namespace tulz;
 
@@ -50,4 +51,31 @@ TEST(EternalObserverTest, ProducedByFactory) {
     subject.notify(2);
 
     ASSERT_EQ(value, 1);
+}
+
+TEST(EternalObserverTest, ProduceByAutoPtrThenInvalidate) {
+    Subject subject;
+    int counter {0};
+
+    auto produce = [](EternalObserverAutoPtr<> observer) {
+        return *observer;
+    };
+
+    using Observer = EternalObserver<>;
+    auto observer = produce([&counter](Observer::SelfView self) {
+        ++counter;
+        self->invalidate();
+    });
+
+    auto subscription = subject.subscribe(std::move(observer));
+
+    ASSERT_TRUE(subscription.getObserver()->isValid());
+
+    subject.notify();
+
+    ASSERT_FALSE(subscription.isValid());
+
+    subject.notify();
+
+    ASSERT_EQ(counter, 1);
 }
