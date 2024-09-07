@@ -1,6 +1,5 @@
 #include <tulz/observer/routing/SubjectRouter.h>
 
-#include <experimental/map>
 #include <numeric>
 #include <cassert>
 
@@ -43,8 +42,7 @@ void SubjectRouter::Node::shrink(RoutingLevelView levelView) {
     }
 
     // erase empty children
-    // C++20: std::erase_if
-    std::experimental::erase_if(m_children, [](auto &p) {
+    std::erase_if(m_children, [](auto &p) {
         return p.second.isEmpty();
     });
 }
