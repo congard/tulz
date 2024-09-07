@@ -6,7 +6,7 @@
 
 namespace tulz {
 namespace detail {
-using EternalObserverFactory_t = decltype([]<typename ...Args>(EternalObserver<Args...>::Func f = {}) {
+using EternalObserverFactory_t = decltype([]<typename ...Args>(typename EternalObserver<Args...>::Func f = {}) {
     return std::make_unique<EternalObserver<Args...>>(std::move(f));
 });
 }
