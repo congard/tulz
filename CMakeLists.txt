@@ -3,6 +3,8 @@ project(tulz)
 
 set(CMAKE_CXX_STANDARD 20)
 
+option(TULZ_ENABLE_TESTS "Turn it off in order to disable tests" ON)
+
 set(TULZ_OBSERVER_SOURCES
         include/tulz/observer/Observer.h
         include/tulz/observer/Subject.h
@@ -96,4 +98,9 @@ target_include_directories(tulz PUBLIC include)
 
 if (ANDROID)
     target_include_directories(tulz PUBLIC android/include)
+endif()
+
+if (TULZ_ENABLE_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
