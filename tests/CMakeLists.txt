@@ -1,22 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(tulz-tests)
 
-enable_testing()
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
-
-if (UNIX)
-    set(DEPS_DIR "deps")
-elseif (WIN32)
-    set(DEPS_DIR "deps-win")
-else()
-    message(FATAL_ERROR "Unsupported OS")
-endif()
-
-get_filename_component(FETCHCONTENT_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${DEPS_DIR}" REALPATH)
 
 FetchContent_Declare(googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
@@ -26,8 +14,6 @@ FetchContent_Declare(googletest
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
-
-add_subdirectory(../ tulz)
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
