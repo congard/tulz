@@ -168,7 +168,7 @@ public:
 
         auto silentCopy = [this](T *dst, size_t n) {
             // copy the 1st part
-            auto n1 = std::min(n, m_capacity - m_pos);
+            auto n1 = std::min<size_t>(n, m_capacity - m_pos);
             std::memcpy(dst, m_data + m_pos, n1 * sizeof(T));
 
             // copy the 2nd part (if left)
