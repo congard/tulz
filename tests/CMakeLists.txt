@@ -38,3 +38,5 @@ add_gtest(EternalObserverTest tulz/observer/EternalObserverTest.cpp)
 add_gtest(ObservableTest tulz/observer/ObservableTest.cpp)
 
 add_gtest(ResourceTest tulz/threading/rwp/ResourceTest.cpp)
+
+add_gtest(OverloadedTest tulz/util/OverloadedTest.cpp)

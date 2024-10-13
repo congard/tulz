@@ -51,7 +51,8 @@ set(TULZ_UTIL_SOURCES
         include/tulz/util/macros.h
         include/tulz/util/static_initializer.h
         include/tulz/util/noncopyable.h
-        include/tulz/util/nonmovable.h)
+        include/tulz/util/nonmovable.h
+        include/tulz/util/overloaded.h)
 
 set(TULZ_GENERAL_SOURCES
         include/tulz/Path.h src/Path.cpp
